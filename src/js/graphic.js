@@ -33,6 +33,11 @@ function slideController(){
   });
 
   d3.select(".decade-slide").selectAll(".grey-button").on("click",function(d){
+    let decadeSelected = d3.select(this).text();
+    console.log(decadeSelected);
+    d3.select(".year-slide").selectAll(".grey-button").each(function(d){
+      d3.select(this).text("hi");
+    })
     mySwiper.slideNext(500, true);
   });
 
