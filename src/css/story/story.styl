@@ -1,6 +1,44 @@
+.song
+  display flex
+  position absolute
+  left 50%
+  top 3rem
+  transform translate(-45px, 0px)
+  transition transform 1s
+  .song-bubble
+    width 30px
+    height 30px
+    background #aaa
+    margin-right 10px
+    flex-grow 0
+    border-radius 50%
+    align-self center
+    transition width 1s, height 1s
+  .song-bubble-active
+    color white
+    background black
+    width 90px
+    height 90px
+    padding 1rem
+    font-size 16px
+    display flex
+    border-radius 50%
+    flex-direction column
+    justify-content center
+    p
+      margin 0 auto
+
+
+
+body
+  height 100vh
 #content
   font-family $atlas
   text-align center
+  height 100%
+
+.swiper-container
+  height 100%
 
 .red-button
   background: #E16259;
@@ -16,6 +54,20 @@
   user-select none
   cursor pointer
 
+.swiper-slide
+  display flex
+  flex-direction column
+  justify-content center
+  height 100%
+
+.decades, .years
+  width 100%
+  display flex
+  flex-wrap wrap
+  max-width 600px
+  justify-content center
+  margin 0 auto
+
 
 .grey-button
   box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.1), 0px 3px 4px rgba(0, 0, 0, 0.16);
@@ -25,11 +77,11 @@
   margin 0 auto
   border-radius 6px
   padding 1rem
-  margin-bottom 1rem
   user-select none
   cursor pointer
   text-align center
   font-size 22px
+  margin 1rem
 
 .options
   div
@@ -42,6 +94,12 @@
     cursor pointer
     max-width 300px
     font-weight 400
+    span
+      font-size: 26px;
+      top: 6px;
+      display: inline-block;
+      position: relative;
+      left: -1px;
     &:first-of-type
       background #FDDFCC
     &:nth-of-type(2)

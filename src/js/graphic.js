@@ -9,6 +9,9 @@ var sound = null;
 let mySwiper = null;
 let songOutput = [];
 let songPlaying = null;
+let songBubbles = null;
+let slideOffSet = 4;
+let songMap = null;
 
 function resize() {}
 
@@ -33,10 +36,14 @@ function slideController(){
   });
 
   d3.select(".decade-slide").selectAll(".grey-button").on("click",function(d){
-    let decadeSelected = d3.select(this).text();
-    console.log(decadeSelected);
-    d3.select(".year-slide").selectAll(".grey-button").each(function(d){
-      d3.select(this).text("hi");
+    let decadeSelected = d3.select(this).text().slice(2,3);
+
+    d3.select(".year-slide").selectAll(".grey-button").each(function(d,i){
+      var prefix = "19"+decadeSelected;
+      if(decadeSelected == 0 || decadeSelected == 1){
+        var prefix = "20"+decadeSelected;
+      }
+      d3.select(this).text(prefix+(i));
     })
     mySwiper.slideNext(500, true);
   });
@@ -55,6 +62,8 @@ function slideController(){
 
 function init() {
 
+  songBubbles = d3.select(".song").selectAll("div").data(d3.range(d3.selectAll(".song-quiz").size())).enter().append("div").attr("class","song-bubble");
+
   mySwiper = new Swiper ('.swiper-container', {
       slidesPerView:1,
       simulateTouch:false,
@@ -68,7 +77,23 @@ function init() {
     }
 
     if(d3.select(".swiper-slide-active").classed("song-quiz")){
+
       changeSong();
+
+      console.log(mySwiper.activeIndex - slideOffSet);
+
+      d3.select(".song").style("transform","translate("+(-45-(35*(mySwiper.activeIndex - slideOffSet)))+"px,0px)")
+
+      songBubbles.each(function(d,i){
+        if(i == (mySwiper.activeIndex - slideOffSet)){
+          d3.select(this).classed("song-bubble-active",true);
+          d3.select(this).append("p").text(songMap.get(songPlaying.key).chart_date.slice(0,4))
+        }
+        else{
+          d3.select(this).selectAll("p").remove();
+          d3.select(this).classed("song-bubble-active",false);
+        }
+      })
     }
 
     if(d3.select(".swiper-slide-active").classed("song-output")){
@@ -77,7 +102,6 @@ function init() {
       .text(function(d){
         return d[0] + ": "+d[1];
       })
-
     }
 
 
@@ -87,8 +111,8 @@ function init() {
   slideController();
 
   loadData(['unique_rows.csv','all_data.csv']).then(result => {
-    var songMap = d3.map(result[1].filter(function(d){
-      return d.chart_date.slice(0,4).slice(2,3) == 0 && +d.rank < 2;
+    songMap = d3.map(result[1].filter(function(d){
+      return d.chart_date.slice(0,4).slice(2,3) == 9 && +d.rank < 2;
     }),function(d){return d.track_id});
 
     songs = result[0].filter(function(d){
