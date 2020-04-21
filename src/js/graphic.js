@@ -12,7 +12,7 @@ let songPlaying = null;
 let songBubbles = null;
 let slideOffSet = 4;
 let songMap = null;
-let slideChangeSpeed = 600;
+let slideChangeSpeed = 700;
 let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
 let durationScale = d3.scaleLinear().domain([0,1]).range([1000,2000]);
 
@@ -27,7 +27,6 @@ const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(5
 function resize() {}
 
 function changeSong(){
-
   if(sound){
     sound.stop();
   }
@@ -36,14 +35,37 @@ function changeSong(){
   songPlaying = song;
 
   sound = new Howl({
-    src: ['https://p.scdn.co/mp3-preview/'+url+'.mp3']
+    src: ['https://p.scdn.co/mp3-preview/'+url+'.mp3'],
+    autoUnlock:true,
+    onplayerror: function() {
+      console.log("error");
+      sound.once('unlock', function() {
+        sound.play();
+      });
+    }
   });
   sound.play();
+  console.log(Howler._audioUnlocked);
 }
 
 function slideController(){
   d3.select(".start-slide").select(".red-button").on("click",function(d){
-    mySwiper.slideNext(slideChangeSpeed, true);
+
+    var song = songs[Math.round(songs.length*Math.random())];
+    var url = song.song_url;
+    songPlaying = song;
+
+    sound = new Howl({
+      src: ['https://p.scdn.co/mp3-preview/'+url+'.mp3'],
+      autoUnlock:true,
+      // onplayerror: function() {
+      //   console.log("error");
+      //   sound.once('unlock', function() {
+      //     sound.play();
+      //   });
+      // }
+    });
+    mySwiper.slideNext(slideChangeSpeed);
   });
 
   d3.select(".decade-slide").selectAll(".grey-button").on("click",function(d){
@@ -74,13 +96,13 @@ function slideController(){
       })
       .ease(d3.easeLinear)
       .style("transform",function(d,i){
-        return "translate(0px,-500px)";
+        return "translate(-33px,-500px)";
       })
       .style("opacity",0)
       .transition()
       .duration(0)
       .style("transform",function(d,i){
-        return "translate(0px,0px)";
+        return "translate(-33px,0px)";
       })
       .style("opacity",1)
       ;
@@ -112,6 +134,8 @@ function init() {
   mySwiper = new Swiper ('.swiper-container', {
       slidesPerView:1,
       simulateTouch:false,
+      touchStartPreventDefault:false,
+      allowTouchMove:false,
     })
 
   mySwiper.on('slideChange', function () {
@@ -147,6 +171,7 @@ function init() {
       console.log(mySwiper.activeIndex - slideOffSet);
 
       function transition(path) {
+        console.log("transitioning");
         path.transition()
             .duration(30000)
             .ease(d3.easeLinear)
@@ -154,8 +179,11 @@ function init() {
       }
 
       function tweenDash() {
-        var l = this.getTotalLength(),
-            i = d3.interpolateString("0," + l, l + "," + l);
+        var l = 2*Math.PI*40;
+        var i = d3.interpolateString("0," + l, l + "," + l);
+
+          console.log(l);
+          console.log(i);
         return function(t) { return i(t); };
       }
 
