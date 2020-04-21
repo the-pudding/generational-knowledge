@@ -1,3 +1,16 @@
+.big-text
+  font-size 32px
+  font-weight 400
+  max-width 500px
+  margin 0 auto
+  margin-bottom 3rem
+
+.med-text
+  font-size 18px
+  font-weight 600
+  max-width 500px
+  margin 0 auto
+  margin-bottom 1rem
 .song
   display flex
   position absolute
@@ -89,9 +102,12 @@ body
   width 100%
   display flex
   flex-wrap wrap
-  max-width 600px
+  max-width 290px
   justify-content center
   margin 0 auto
+.decades
+  flex-direction row-reverse
+  max-width 400px
 
 
 .grey-button
@@ -106,7 +122,7 @@ body
   cursor pointer
   text-align center
   font-size 22px
-  margin 1rem
+  margin .5rem
   &:active
     background #eee
 
@@ -130,6 +146,17 @@ body
       line-height 0
     &:first-of-type
       background #FDDFCC
+      position relative
+      &:before
+        content 'Do you recognize this song?'
+        position absolute
+        top -1rem
+        left 0px
+        transform translate(0,-100%)
+        text-align center
+        width 100%
+        font-size 16px
+        font-weight 500
       span
         font-size 36px
         line-height 0

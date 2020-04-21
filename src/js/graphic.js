@@ -12,7 +12,7 @@ let songPlaying = null;
 let songBubbles = null;
 let slideOffSet = 4;
 let songMap = null;
-let slideChangeSpeed = 750;
+let slideChangeSpeed = 600;
 
 function resize() {}
 
