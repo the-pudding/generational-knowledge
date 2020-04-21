@@ -12,6 +12,7 @@ let songPlaying = null;
 let songBubbles = null;
 let slideOffSet = 4;
 let songMap = null;
+let slideChangeSpeed = 750;
 
 function resize() {}
 
@@ -32,7 +33,7 @@ function changeSong(){
 
 function slideController(){
   d3.select(".start-slide").select(".red-button").on("click",function(d){
-    mySwiper.slideNext(500, true);
+    mySwiper.slideNext(slideChangeSpeed, true);
   });
 
   d3.select(".decade-slide").selectAll(".grey-button").on("click",function(d){
@@ -45,17 +46,23 @@ function slideController(){
       }
       d3.select(this).text(prefix+(i));
     })
-    mySwiper.slideNext(500, true);
+    mySwiper.slideNext(slideChangeSpeed, true);
   });
 
   d3.select(".year-slide").selectAll(".grey-button").on("click",function(d){
-    mySwiper.slideNext(500, true);
+    mySwiper.slideNext(slideChangeSpeed, true);
   });
 
   d3.selectAll(".options").selectAll("div").on("click",function(d){
     songOutput.push([songPlaying.artist+", "+songPlaying.title,d3.select(this).text()]);
-    mySwiper.slideNext(500, true);
-    console.log(songOutput);
+    mySwiper.slideNext(slideChangeSpeed, true);
+    let textToAdd = d3.select(this).select("span").text();
+    songBubbles.each(function(d,i){
+
+      if(i == (mySwiper.activeIndex - slideOffSet - 1)){
+        d3.select(this).append("p").attr("class","post-answer").text(textToAdd);
+      }
+    })
   });
 
 }
@@ -69,10 +76,30 @@ function init() {
       simulateTouch:false,
     })
 
+  mySwiper.on('slideChange', function () {
+    if(mySwiper.activeIndex == slideOffSet){
+      d3.select(".song").style("opacity",1);
+    }
+    d3.select(".song").style("transform","translate("+(-45-(40*(mySwiper.activeIndex - slideOffSet)))+"px,0px)")
+
+    songBubbles.each(function(d,i){
+      if(i == (mySwiper.activeIndex - slideOffSet)){
+        d3.select(this).classed("song-bubble-active",true);
+      }
+      else{
+        d3.select(this).selectAll(".year-text").remove();
+        d3.select(this).selectAll("svg").remove();
+
+        d3.select(this).classed("song-bubble-active",false);
+      }
+    })
+  })
+
+
   mySwiper.on('slideNextTransitionEnd', function () {
     if(d3.select(".swiper-slide-active").classed("loading-slide")){
       window.setTimeout(function(d){
-        mySwiper.slideNext(500, true);
+        mySwiper.slideNext(slideChangeSpeed, true);
       },1000)
     }
 
@@ -82,16 +109,32 @@ function init() {
 
       console.log(mySwiper.activeIndex - slideOffSet);
 
-      d3.select(".song").style("transform","translate("+(-45-(35*(mySwiper.activeIndex - slideOffSet)))+"px,0px)")
+      function transition(path) {
+        path.transition()
+            .duration(30000)
+            .ease(d3.easeLinear)
+            .attrTween("stroke-dasharray", tweenDash)
+      }
+
+      function tweenDash() {
+        var l = this.getTotalLength(),
+            i = d3.interpolateString("0," + l, l + "," + l);
+        return function(t) { return i(t); };
+      }
+
 
       songBubbles.each(function(d,i){
         if(i == (mySwiper.activeIndex - slideOffSet)){
-          d3.select(this).classed("song-bubble-active",true);
-          d3.select(this).append("p").text(songMap.get(songPlaying.key).chart_date.slice(0,4))
-        }
-        else{
-          d3.select(this).selectAll("p").remove();
-          d3.select(this).classed("song-bubble-active",false);
+          d3.select(this).append("p").attr("class","year-text").text(songMap.get(songPlaying.key).chart_date.slice(0,4))
+
+          d3.select(this).append("svg")
+            .attr("width",90)
+            .attr("height",90)
+            .append("circle")
+            .attr("r",40)
+            .attr("cx",45)
+            .attr("cy",45)
+            .call(transition);
         }
       })
     }
@@ -104,15 +147,13 @@ function init() {
       })
     }
 
-
-
   });
 
   slideController();
 
   loadData(['unique_rows.csv','all_data.csv']).then(result => {
     songMap = d3.map(result[1].filter(function(d){
-      return d.chart_date.slice(0,4).slice(2,3) == 9 && +d.rank < 2;
+      return d.chart_date.slice(0,4).slice(2,3) == 8 && +d.rank < 5;
     }),function(d){return d.track_id});
 
     songs = result[0].filter(function(d){
