@@ -13,6 +13,16 @@ let songBubbles = null;
 let slideOffSet = 4;
 let songMap = null;
 let slideChangeSpeed = 600;
+let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
+let durationScale = d3.scaleLinear().domain([0,1]).range([1000,2000]);
+
+const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
+  .style("left",function(d,i){
+    return Math.random()*100+"%";
+  })
+  .style("font-size",function(d,i){
+    return fontSizeScale(Math.random())+"px";
+  });
 
 function resize() {}
 
@@ -54,15 +64,43 @@ function slideController(){
   });
 
   d3.selectAll(".options").selectAll("div").on("click",function(d){
+
+    emojiDivs.text(d3.select(this).select(".emoji").text());
+
+    emojiDivs
+      .transition()
+      .duration(function(d){
+        return durationScale(Math.random());
+      })
+      .ease(d3.easeLinear)
+      .style("transform",function(d,i){
+        return "translate(0px,-500px)";
+      })
+      .style("opacity",0)
+      .transition()
+      .duration(0)
+      .style("transform",function(d,i){
+        return "translate(0px,0px)";
+      })
+      .style("opacity",1)
+      ;
+
+
     songOutput.push([songPlaying.artist+", "+songPlaying.title,d3.select(this).text()]);
     mySwiper.slideNext(slideChangeSpeed, true);
     let textToAdd = d3.select(this).select("span").text();
-    songBubbles.each(function(d,i){
 
+    songBubbles.each(function(d,i){
       if(i == (mySwiper.activeIndex - slideOffSet - 1)){
         d3.select(this).append("p").attr("class","post-answer").text(textToAdd);
       }
     })
+
+
+
+
+
+
   });
 
 }
@@ -89,7 +127,6 @@ function init() {
       else{
         d3.select(this).selectAll(".year-text").remove();
         d3.select(this).selectAll("svg").remove();
-
         d3.select(this).classed("song-bubble-active",false);
       }
     })
