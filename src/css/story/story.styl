@@ -1,3 +1,28 @@
+.output
+  height 10000000px
+  background #f7f7f7
+  .quiz-end
+    max-width 800px
+    margin 0 auto
+    padding-top 3rem
+.loading
+  width: 50px;
+  height: 50px;
+  border: 4px solid #E5E5E5;
+  border-radius: 50%;
+  border-top: 4px solid #40B3F0;
+  animation: move 1.5s ease-in-out infinite;
+  margin 0 auto
+
+@keyframes move {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .emoji-container
   position absolute
   width 100%
@@ -39,6 +64,7 @@
   transform translate(-45px,0px)
   transition transform .5s, opacity 1s
   opacity 0
+  counter-reset section
   .song-bubble
     width 30px
     height 30px
@@ -54,6 +80,10 @@
     display flex
     flex-direction column
     justify-content center
+    counter-increment section
+    &:before
+      opacity 0
+      transition opacity 1s
     p
       margin 0 auto
       padding-left 4px
@@ -70,12 +100,26 @@
     justify-content center
     border none
     position relative
+    div
+      &:before
+        content counters(section, "") " of 10"
+        position absolute
+        top 60px
+        color black
+        transform translate(0,100%)
+        text-align center
+        width 100%
+        left 0px
+        font-weight 400
+        font-size 14px
+        opacity 1
+        transition opacity 1s
+
     svg
       position absolute
       left 0px
       top 0px
       circle
-        stroke white
         stroke-width 4px
         fill transparent
 
@@ -85,15 +129,16 @@
 
 
 
-body
+
+.quiz-wrapper
   height 100vh
-#content
-  font-family $atlas
-  text-align center
-  height 100%
   width 100%
   position relative
   overflow hidden
+  text-align center
+#content
+  font-family $atlas
+  position relative
 
 .swiper-container
   height 100%
@@ -111,6 +156,12 @@ body
   padding 1rem
   user-select none
   cursor pointer
+  position relative
+  padding-left 4rem
+  svg
+    position absolute
+    left 15px
+    top 20px
   &:active
     background #bf4d45
 
@@ -157,8 +208,8 @@ body
     background red
     user-select none
     cursor pointer
-    max-width 300px
-    font-weight 400
+    max-width 240px
+    font-weight 500
     span
       font-size: 26px;
       top: 6px;
@@ -172,13 +223,13 @@ body
       &:before
         content 'Do you recognize this song?'
         position absolute
-        top -1rem
+        top -2rem
         left 0px
-        transform translate(0,-100%)
+        transform translate(-122px,-100%)
         text-align center
-        width 100%
-        font-size 16px
-        font-weight 500
+        width 500px
+        font-size 32px
+        font-weight 300
       span
         font-size 36px
         line-height 0

@@ -12,9 +12,10 @@ let songPlaying = null;
 let songBubbles = null;
 let slideOffSet = 4;
 let songMap = null;
-let slideChangeSpeed = 700;
+let slideChangeSpeed = 350;
 let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
 let durationScale = d3.scaleLinear().domain([0,1]).range([1000,2000]);
+let yearSelected = null;
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -58,14 +59,8 @@ function slideController(){
     sound = new Howl({
       src: ['https://p.scdn.co/mp3-preview/'+url+'.mp3'],
       autoUnlock:true,
-      // onplayerror: function() {
-      //   console.log("error");
-      //   sound.once('unlock', function() {
-      //     sound.play();
-      //   });
-      // }
     });
-    mySwiper.slideNext(slideChangeSpeed);
+    mySwiper.slideNext();
   });
 
   d3.select(".decade-slide").selectAll(".grey-button").on("click",function(d){
@@ -82,6 +77,7 @@ function slideController(){
   });
 
   d3.select(".year-slide").selectAll(".grey-button").on("click",function(d){
+    yearSelected = d3.select(this).text();
     mySwiper.slideNext(slideChangeSpeed, true);
   });
 
@@ -107,13 +103,41 @@ function slideController(){
       .style("opacity",1)
       ;
 
-
     songOutput.push([songPlaying.artist+", "+songPlaying.title,d3.select(this).text()]);
-    mySwiper.slideNext(slideChangeSpeed, true);
+
+
+
+    if(d3.select(".swiper-slide-active").classed("last-song")){
+
+      d3.transition()
+          .delay(0)
+          .duration(1000)
+          .tween("scroll", scrollTween(window.innerHeight));
+
+      function scrollTween(offset) {
+        return function() {
+          var i = d3.interpolateNumber(window.pageYOffset || document.documentElement.scrollTop, offset);
+          return function(t) { scrollTo(0, i(t)); };
+        };
+      }
+
+      d3.select(".quiz-end").selectAll("p")
+        .data(songOutput).enter().append("p")
+        .text(function(d){
+          return d[0] + ": "+d[1];
+        })
+    }
+    else {
+      mySwiper.slideNext(slideChangeSpeed, true);
+    }
+
+
+    let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
     let textToAdd = d3.select(this).select("span").text();
 
     songBubbles.each(function(d,i){
       if(i == (mySwiper.activeIndex - slideOffSet - 1)){
+        d3.select(this).style("background-color",colorToAdd);
         d3.select(this).append("p").attr("class","post-answer").text(textToAdd);
       }
     })
@@ -161,14 +185,12 @@ function init() {
     if(d3.select(".swiper-slide-active").classed("loading-slide")){
       window.setTimeout(function(d){
         mySwiper.slideNext(slideChangeSpeed, true);
-      },1000)
+      },2000)
     }
 
-    if(d3.select(".swiper-slide-active").classed("song-quiz")){
+    else if(d3.select(".swiper-slide-active").classed("song-quiz")){
 
       changeSong();
-
-      console.log(mySwiper.activeIndex - slideOffSet);
 
       function transition(path) {
         console.log("transitioning");
@@ -176,21 +198,28 @@ function init() {
             .duration(30000)
             .ease(d3.easeLinear)
             .attrTween("stroke-dasharray", tweenDash)
+            .attrTween("stroke", colorTween)
+      }
+
+      function colorTween() {
+        // var l = 2*Math.PI*40;
+        // var i = d3.interpolateString("0," + l, l + "," + l);
+        var i = d3.interpolateHslLong("#17becf", "red");
+        return function(t) {
+          return i(t);
+        };
       }
 
       function tweenDash() {
         var l = 2*Math.PI*40;
         var i = d3.interpolateString("0," + l, l + "," + l);
 
-          console.log(l);
-          console.log(i);
         return function(t) { return i(t); };
       }
 
-
       songBubbles.each(function(d,i){
         if(i == (mySwiper.activeIndex - slideOffSet)){
-          d3.select(this).append("p").attr("class","year-text").text(songMap.get(songPlaying.key).chart_date.slice(0,4))
+          d3.select(this).append("div").attr("class","year-text").text(songMap.get(songPlaying.key).chart_date.slice(0,4))
 
           d3.select(this).append("svg")
             .attr("width",90)
@@ -204,21 +233,13 @@ function init() {
       })
     }
 
-    if(d3.select(".swiper-slide-active").classed("song-output")){
-      d3.select(".song-output").select("div").selectAll("p")
-      .data(songOutput).enter().append("p")
-      .text(function(d){
-        return d[0] + ": "+d[1];
-      })
-    }
-
   });
 
   slideController();
 
   loadData(['unique_rows.csv','all_data.csv']).then(result => {
     songMap = d3.map(result[1].filter(function(d){
-      return d.chart_date.slice(0,4).slice(2,3) == 8 && +d.rank < 5;
+      return d.chart_date.slice(0,4).slice(2,3) == 1 && +d.rank < 5;
     }),function(d){return d.track_id});
 
     songs = result[0].filter(function(d){
