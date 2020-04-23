@@ -128,12 +128,10 @@ function slideController(){
         })
     }
     else {
+      let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
+      let textToAdd = d3.select(this).select("span").text();
       mySwiper.slideNext(slideChangeSpeed, true);
     }
-
-
-    let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
-    let textToAdd = d3.select(this).select("span").text();
 
     songBubbles.each(function(d,i){
       if(i == (mySwiper.activeIndex - slideOffSet - 1)){
