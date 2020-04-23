@@ -136,12 +136,21 @@
   position relative
   overflow hidden
   text-align center
+  display flex
+  flex-direction column
+  justify-content flex-start
+  .quiz
+    height 100%
+
+
 #content
   font-family $atlas
   position relative
 
 .swiper-container
   height 100%
+  .song-quiz
+    justify-content flex-start
 
 .red-button
   background: #E16259;
@@ -200,6 +209,7 @@
     background #eee
 
 .options
+  padding-top 300px
   div
     border-radius 6px
     margin 0 auto
@@ -230,6 +240,9 @@
         width 500px
         font-size 32px
         font-weight 300
+      @media (max-width: 450px)
+        &:before
+          font-size 24px
       span
         font-size 36px
         line-height 0

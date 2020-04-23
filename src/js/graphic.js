@@ -2,12 +2,14 @@
 import Swiper from 'swiper';
 import loadData from './load-data'
 import {Howl, Howler} from 'howler';
+import db from './db';
 
 
 let songs;
 var sound = null;
 let mySwiper = null;
 let songOutput = [];
+let dbOutput = [];
 let songPlaying = null;
 let songBubbles = null;
 let slideOffSet = 4;
@@ -16,6 +18,7 @@ let slideChangeSpeed = 350;
 let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
 let durationScale = d3.scaleLinear().domain([0,1]).range([1000,2000]);
 let yearSelected = null;
+let quizCompleted = false;
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -81,7 +84,7 @@ function slideController(){
     mySwiper.slideNext(slideChangeSpeed, true);
   });
 
-  d3.selectAll(".options").selectAll("div").on("click",function(d){
+  d3.selectAll(".options").selectAll("div").on("click",function(d,i){
 
     emojiDivs.text(d3.select(this).select(".emoji").text());
 
@@ -104,10 +107,14 @@ function slideController(){
       ;
 
     songOutput.push([songPlaying.artist+", "+songPlaying.title,d3.select(this).text()]);
-
+    dbOutput.push({"key":songPlaying.key,"answer":i})
 
 
     if(d3.select(".swiper-slide-active").classed("last-song")){
+
+      if(sound){
+        sound.stop();
+      }
 
       d3.transition()
           .delay(0)
@@ -126,19 +133,25 @@ function slideController(){
         .text(function(d){
           return d[0] + ": "+d[1];
         })
+
+      quizCompleted = true;
+      db.update({"year":yearSelected,"answers":dbOutput});
+      // db.update({ key: term, min, max, order });
     }
     else {
       let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
       let textToAdd = d3.select(this).select("span").text();
+
+      songBubbles.each(function(d,i){
+        if(i == (mySwiper.activeIndex - slideOffSet )){
+          d3.select(this).style("background-color",colorToAdd);
+          d3.select(this).append("p").attr("class","post-answer").text(textToAdd);
+        }
+      })
       mySwiper.slideNext(slideChangeSpeed, true);
     }
 
-    songBubbles.each(function(d,i){
-      if(i == (mySwiper.activeIndex - slideOffSet - 1)){
-        d3.select(this).style("background-color",colorToAdd);
-        d3.select(this).append("p").attr("class","post-answer").text(textToAdd);
-      }
-    })
+
 
 
 
@@ -150,6 +163,10 @@ function slideController(){
 }
 
 function init() {
+
+  setupDB();
+
+  console.log(yearSelected);
 
   songBubbles = d3.select(".song").selectAll("div").data(d3.range(d3.selectAll(".song-quiz").size())).enter().append("div").attr("class","song-bubble");
 
@@ -177,7 +194,6 @@ function init() {
       }
     })
   })
-
 
   mySwiper.on('slideNextTransitionEnd', function () {
     if(d3.select(".swiper-slide-active").classed("loading-slide")){
@@ -250,5 +266,22 @@ function init() {
 	}).catch(console.error);
 
 }
+
+function setupDB() {
+  db.setup();
+  const answers = db.getAnswers();
+  console.log(answers);
+  if(answers){
+    d3.select(".decade-slide").remove();
+    d3.select(".year-slide").remove();
+    yearSelected = answers["year"]
+    answers["answers"].forEach(function(d){
+      dbOutput.push(d);
+    })
+  }
+
+
+}
+
 
 export default { init, resize };
