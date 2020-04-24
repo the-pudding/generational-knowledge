@@ -19,6 +19,7 @@ let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
 let durationScale = d3.scaleLinear().domain([0,1]).range([1000,2000]);
 let yearSelected = null;
 let quizCompleted = false;
+let songCount = 0;
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -30,11 +31,12 @@ const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(5
 
 function resize() {}
 
-function changeSong(){
+function changeSong(songNumber){
   if(sound){
     sound.stop();
   }
-  var song = songs[Math.round(songs.length*Math.random())];
+  console.log(songNumber);
+  var song = songs[songNumber];
   var url = song.song_url;
   songPlaying = song;
 
@@ -202,7 +204,8 @@ function init() {
 
     else if(d3.select(".swiper-slide-active").classed("song-quiz")){
 
-      changeSong();
+      changeSong(songCount);
+      songCount = songCount + 1;
 
       function transition(path) {
         console.log("transitioning");
@@ -251,7 +254,7 @@ function init() {
 
   loadData(['unique_rows.csv','all_data.csv']).then(result => {
     songMap = d3.map(result[1].filter(function(d){
-      return d.chart_date.slice(0,4).slice(2,3) == 1 && +d.rank < 5;
+      return d.chart_date.slice(0,4).slice(2,3) == 8 && +d.rank < 5;
     }),function(d){return d.track_id});
 
     songs = result[0].filter(function(d){
