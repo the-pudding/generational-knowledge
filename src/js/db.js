@@ -97,7 +97,6 @@ function clear() {
   console.log("clearing");
   localStorage.removeItem('pudding_song_id');
   localStorage.removeItem('pudding_song_answers');
-  localStorage.removeItem('pudding_laugh_answers');
 }
 
 function setup() {

@@ -166,8 +166,6 @@ function init() {
 
   setupDB();
 
-  console.log(yearSelected);
-
   songBubbles = d3.select(".song").selectAll("div").data(d3.range(d3.selectAll(".song-quiz").size())).enter().append("div").attr("class","song-bubble");
 
   mySwiper = new Swiper ('.swiper-container', {
@@ -270,10 +268,10 @@ function init() {
 function setupDB() {
   db.setup();
   const answers = db.getAnswers();
-  console.log(answers);
   if(answers){
     d3.select(".decade-slide").remove();
     d3.select(".year-slide").remove();
+    slideOffSet = slideOffSet - 2;
     yearSelected = answers["year"]
     answers["answers"].forEach(function(d){
       dbOutput.push(d);
