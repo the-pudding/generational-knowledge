@@ -9,6 +9,7 @@ let dataURL = 'data.csv?version='+VERSION
 let songs;
 
 var sound = null;
+let overrideAudio = {"12407":"get_down_tonight"}
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -37,7 +38,7 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
-let decadeCustom = {9:["3078","4441","3077"],0:["1532","2144","2445"],8:["7845","8257","6687"],7:["11369","15205","13441"],6:["16525","17218","20821"]};
+let decadeCustom = {9:["3078","4441","3077"],0:["1532","2144","2445"],8:["7845","8257","6687"],7:["11369","15205","13441","12407"],6:["16525","17218","20821"]};
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -56,11 +57,17 @@ function playPauseSong(song){
   }
   if(!songPlaying){
     songPlaying = song;
+
+    let src = 'https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'
+    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
+      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    }
     sound = new Howl({
-      src: ['https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'],
+      src:[src],
       format:['mpeg'],
       autoUnlock:true,
     });
+
     sound.on("end",function(){
       console.log("ending");
       startNew = true;
@@ -71,11 +78,17 @@ function playPauseSong(song){
     startNew = false;
     songPlaying = song;
 
+
+    let src = 'https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'
+    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
+      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    }
     sound = new Howl({
-      src: ['https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'],
+      src:[src],
       format:['mpeg'],
       autoUnlock:true,
     });
+
     sound.on("end",function(){
       console.log("ending");
       startNew = true;
@@ -126,12 +139,14 @@ function changeSong(songNumber){
 
   songCount = songCount + 1;
   var song = songs[songCount];
-  console.log(songs);
-  console.log(song);
   var url = song.song_url;
 
+  let src = 'https://p.scdn.co/mp3-preview/'+url+'?cid=774b29d4f13844c495f206cafdad9c86'
+  if(Object.keys(overrideAudio).indexOf(song.key) > -1){
+    src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+  }
   upcomingSound = new Howl({
-    src: ['https://p.scdn.co/mp3-preview/'+url+'?cid=774b29d4f13844c495f206cafdad9c86'],
+    src:[src],
     format:['mpeg'],
     autoUnlock:true,
     onplayerror: function() {
@@ -141,6 +156,7 @@ function changeSong(songNumber){
       });
     }
   });
+
   console.log(Howler._audioUnlocked);
 }
 
@@ -151,8 +167,12 @@ function slideController(){
     var url = song.song_url;
     songPlaying = song;
 
+    let src = 'https://p.scdn.co/mp3-preview/'+url;
+    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
+      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    }
     sound = new Howl({
-      src: ['https://p.scdn.co/mp3-preview/'+url],
+      src:[src],
       format:['mpeg'],
       autoUnlock:true,
     });
@@ -380,8 +400,7 @@ function init() {
   slideController();
   //
   var decadeSelector = d3.scaleQuantize().domain([0,1])
-    .range([7])
-    //.range([0,6,7,8,9])
+    .range([0,6,7,8,9])
 
   songDecades = decadeSelector(Math.random());
   d3.selectAll(".song-decade").text(function(d){
