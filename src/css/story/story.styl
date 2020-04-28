@@ -1,254 +1,561 @@
-.output
-  height 10000000px
-  background #f7f7f7
-  .quiz-end
-    max-width 800px
-    margin 0 auto
-    padding-top 3rem
-.loading
-  width: 50px;
-  height: 50px;
-  border: 4px solid #E5E5E5;
-  border-radius: 50%;
-  border-top: 4px solid #40B3F0;
-  animation: move 1.5s ease-in-out infinite;
-  margin 0 auto
-
-@keyframes move {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.emoji-container
-  position absolute
-  width 100%
-  height 100%
-  pointer-events none
-  z-index 1000
-  max-width 1200px
-  left 0px
-  right 0px
-  margin 0 auto
-
-  transform translate3d(0,0,0,0)
-  div
-    position absolute
-    bottom -100px
-    font-size 48px
-    opacity 1
-    transform translate(-33px,0%)
-
-.big-text
-  font-size 32px
-  font-weight 400
-  max-width 500px
-  margin 0 auto
-  margin-bottom 3rem
-
-.med-text
-  font-size 18px
-  font-weight 600
-  max-width 500px
-  margin 0 auto
-  margin-bottom 1rem
-.song
-  display flex
-  position absolute
-  left 50%
-  height 90px
-  top 3rem
-  transform translate(-45px,0px)
-  transition transform .5s, opacity 1s
-  opacity 0
-  counter-reset section
-  .song-bubble
-    width 30px
-    height 30px
-    background #f7f7f7
-    margin-right 10px
-    flex-grow 0
-    border-radius 50%
-    align-self center
-    transition width .5s, height .5s
-    font-size 25px
-    line-height 31px
-    border 1px solid #adadad
-    display flex
-    flex-direction column
-    justify-content center
-    counter-increment section
-    &:before
-      opacity 0
-      transition opacity 1s
-    p
-      margin 0 auto
-      padding-left 4px
-  .song-bubble-active
-    color white
-    background black
-    width 90px
-    height 90px
-    padding 1rem
-    font-size 16px
-    display flex
-    border-radius 50%
-    flex-direction column
-    justify-content center
-    border none
-    position relative
-    div
-      &:before
-        content counters(section, "") " of 10"
-        position absolute
-        top 60px
-        color black
-        transform translate(0,100%)
-        text-align center
-        width 100%
-        left 0px
-        font-weight 400
-        font-size 14px
-        opacity 1
-        transition opacity 1s
-
-    svg
-      position absolute
-      left 0px
-      top 0px
-      circle
-        stroke-width 4px
-        fill transparent
-
-    p
-      padding-left 0px
-
-
-
-
-
-.quiz-wrapper
-  height 100vh
-  width 100%
-  position relative
-  overflow hidden
-  text-align center
-  display flex
-  flex-direction column
-  justify-content flex-start
-  .quiz
-    height 100%
-
-
 #content
   font-family $atlas
   position relative
+  color rgb(4,4,4)
+  .color-recognize
+    padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space nowrap
+    background-color rgb(255, 204, 210)
+  .color-dont-recognize
+    background rgb(253, 223, 204)
+    padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space nowrap
+  p
+    color rgb(4,4,4)
+  .songs-that-are-old
+    max-width 570px
+    margin 0 auto
+    font-size 18px
+    margin-bottom 3rem
+    .row
+      position relative
+      display flex
+      .quiz-end-section-item-text
+        margin 0
+        max-width none
+        margin-left 5px
+        font-size 16px
+        margin-bottom 6px
+        .bold
+          font-weight 500
+      .quiz-end-section-item-play
+        cursor pointer
 
-.swiper-container
-  height 100%
-  .song-quiz
-    justify-content flex-start
+  .grid-chart
+    max-width 570px
+    margin 0 auto
+    margin-top 5rem
+    .row
+      width 100%
+      position relative
+      display flex
+      margin 0 auto
+      margin-bottom 10px
+      &:first-of-type
+        .box-container
+          .box
+            position relative
+            &:before
+              content 'Gen Z'
+              position absolute
+              top 0px
+              left 0px
+              right 0px
+              transform translate(0,-140%)
+              font-size 13px
+              text-align center
+            &:after
+              content 'Ages 13–22'
+              position absolute
+              top 0px
+              margin 0 auto
+              left 0px
+              right 0px
+              transform translate(0,-200%)
+              font-size 10px
+              width 40px
+              text-align center
+              font-weight 400
+            &:nth-of-type(2)
+              &:before
+                content 'Millenials'
+              &:after
+                content 'Ages 23–38'
+            &:nth-of-type(3)
+              &:before
+                content 'Gen X'
+              &:after
+                content 'Ages 39–54'
+            &:nth-of-type(4)
+              &:before
+                content 'Boomers'
+              &:after
+                content 'Ages 55–73'
+      .box-container
+        display flex
+        width calc(100% - 250px)
+        margin 0
+        border-bottom 1px solid rgba(0, 0, 0, 0.21)
+        .box
+          width 60px
+          display flex
+          flex-direction column
+          justify-content center
+          margin-right 5px
+          flex-grow 1
+          position relative
+          .box-height
+            position absolute
+            bottom 0px
+            left 0px
+            right 0px
+            width 80%
+            margin 0 auto
+            height 100%
+            z-index 0
+          p
+            font-size 16px
+            margin 0
+            z-index 100
+            text-align center
+            line-height 1.1
+      .row-label
+        //position absolute
+        transform translate(0px,0)
+        padding-right 10px
+        padding-bottom 15px
+        padding-top 15px
+        font-size 12px
+        width 160px
+        max-width 200px
+        flex-grow 1
+        //top 50%
+        //left -5px
+        text-align right
+        line-height 1.3
+        margin 0
+        span
+          font-weight 500
+          font-size 11px
 
-.red-button
-  background: #E16259;
-  border: 1px solid #BE5643;
-  border-radius: 6px;
-  max-width 300px
-  margin 0 auto
-  font-family $atlas
-  color white
-  text-align center
-  font-size 22px
-  padding 1rem
-  user-select none
-  cursor pointer
-  position relative
-  padding-left 4rem
-  svg
+  .bar-chart
+    max-width 570px
+    margin 0 auto
+    margin-bottom 3rem
+    .row
+      display flex
+      width calc(100% - 160px)
+      margin 0 auto
+      position relative
+      margin-bottom 10px
+      &:first-of-type
+        .row-bar
+          .row-percent
+            line-height 1
+            width 100px
+            top 3px
+            span
+              font-weight 400
+      .row-label
+        display inline-block
+        margin 0
+        position absolute
+        transform translate(-100%,0px)
+        text-align right
+        font-weight 600
+        left -5px
+        font-size 14px
+        span
+          position absolute
+          right 0px
+          bottom 5px
+          width 80px
+          font-size 12px
+          transform translate(0,100%)
+          font-weight 300
+      .row-bar
+        background orange
+        position relative
+        height 35px
+        .row-percent
+          position absolute
+          right -6px
+          font-size 14px
+          transform translate(100% ,0px)
+          font-weight 600
+          top 5px
+          color rgba(0,0,0,.6)
+
+
+
+
+  .output
+    //background #f7f7f7
+    padding-top 5rem
+    .video-container
+      max-width 300px
+      margin 0 auto
+      video
+        width 100%
+        margin 0 auto
+    p
+      font-size 18px
+      font-weight 300
+      max-width 570px
+      margin 0 auto
+      margin-bottom 1.4rem
+    .song-knew-compare
+      margin-top 1rem
+      .chart-head
+        line-height 1.8
+        margin-bottom 3rem
+      .chart-head-alt
+        line-height 1.8
+        margin-bottom 3rem
+        display none
+    .big-text
+      font-size 48px
+      font-weight 400
+      max-width 570px
+      margin 0 auto
+      line-height 1.3
+      margin-bottom 3rem
+    .med-text
+      font-size 24px
+      font-weight 300
+      max-width 570px
+      margin 0 auto
+      margin-bottom 1rem
+    .space
+      height 2rem
+      display block
+    .quiz-end
+      max-width 800px
+      margin 0 auto
+      padding-top 3rem
+      width 90%
+      display flex
+      flex-wrap wrap
+      .quiz-end-section
+        margin-bottom 50px
+        max-width 400px
+        flex-grow 1
+    .quiz-end-section-title
+      margin 0
+      display inline-block
+      font-size 14px
+      border-radius 6px
+      margin 0 auto
+      padding .3rem .8rem
+      background red
+      user-select none
+      cursor pointer
+      font-weight 400
+      position relative
+      width 90%
+      margin 0
+      margin-bottom 1rem
+      //margin-left 34px
+      span
+        font-size 22px
+        top 4px
+        display inline-block
+        position relative
+        left -4px
+        line-height 0
+
+      //&:before
+        //content 'You'
+        //position absolute
+        //left -8px
+        //top 50%
+        //transform translate(-100%,-50%)
+
+    .quiz-end-section-items
+      width 90%
+      .quiz-end-section-item
+        display flex
+        .quiz-end-section-item-play
+          cursor pointer
+          svg
+            margin-top -6px
+            margin-right 8px
+        .quiz-end-section-item-text
+          margin 0
+          font-size 16px
+          line-height 1.4
+          margin-bottom .8rem
+          font-weight 400
+          .bold
+            font-weight 500
+
+
+  .bold
+    font-weight 600
+
+
+  .loading
+    width: 50px;
+    height: 50px;
+    border: 4px solid #E5E5E5;
+    border-radius: 50%;
+    border-top: 4px solid #40B3F0;
+    animation: move 1.5s ease-in-out infinite;
+    margin 0 auto
+
+  @keyframes move {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .emoji-container
     position absolute
-    left 15px
-    top 20px
-  &:active
-    background #bf4d45
+    width 100%
+    height 100%
+    pointer-events none
+    z-index 1000
+    max-width 1200px
+    left 0px
+    right 0px
+    margin 0 auto
 
-.swiper-slide
-  display flex
-  flex-direction column
-  justify-content center
-  height 100%
+    transform translate3d(0,0,0,0)
+    div
+      position absolute
+      bottom -100px
+      font-size 48px
+      opacity 1
+      transform translate(-33px,0%)
 
-.decades, .years
-  width 100%
-  display flex
-  flex-wrap wrap
-  max-width 290px
-  justify-content center
-  margin 0 auto
-.decades
-  flex-direction row-reverse
-  max-width 400px
+  .big-text
+    font-size 32px
+    font-weight 400
+    max-width 500px
+    margin 0 auto
+    margin-bottom 3rem
 
-
-.grey-button
-  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.1), 0px 3px 4px rgba(0, 0, 0, 0.16);
-  color rgba(0,0,0,.8)
-  font-weight 600
-  max-width 100px
-  margin 0 auto
-  border-radius 6px
-  padding 1rem
-  user-select none
-  cursor pointer
-  text-align center
-  font-size 22px
-  margin .5rem
-  &:active
-    background #eee
-
-.options
-  padding-top 300px
-  div
-    border-radius 6px
+  .med-text
+    font-size 18px
+    font-weight 600
+    max-width 500px
     margin 0 auto
     margin-bottom 1rem
+  .mid-text
+    font-weight 400
+    font-size 24px
+  .song
+    display flex
+    position absolute
+    left 50%
+    height 90px
+    top 3rem
+    transform translate(-45px,0px)
+    transition transform .5s, opacity 1s
+    opacity 0
+    counter-reset section
+    .song-bubble
+      width 30px
+      height 30px
+      background #f7f7f7
+      margin-right 10px
+      flex-grow 0
+      border-radius 50%
+      align-self center
+      transition width .5s, height .5s
+      font-size 25px
+      line-height 31px
+      border 1px solid #adadad
+      display flex
+      flex-direction column
+      justify-content center
+      counter-increment section
+      &:before
+        opacity 0
+        transition opacity 1s
+      p
+        margin 0 auto
+        padding-left 4px
+    .song-bubble-active
+      color white
+      background rgb(4,4,4)
+      width 90px
+      height 90px
+      padding 1rem
+      font-size 16px
+      display flex
+      border-radius 50%
+      flex-direction column
+      justify-content center
+      border none
+      position relative
+      div
+        &:before
+          content counters(section, "") " of 10"
+          position absolute
+          top 60px
+          color black
+          transform translate(0,100%)
+          text-align center
+          width 100%
+          left 0px
+          font-weight 400
+          font-size 14px
+          opacity 1
+          transition opacity 1s
+
+      svg
+        position absolute
+        left 0px
+        top 0px
+        circle
+          stroke-width 4px
+          fill transparent
+
+      p
+        padding-left 0px
+
+
+
+
+
+  .quiz-wrapper
+    height 100vh
+    width 100%
+    position relative
+    overflow hidden
+    text-align center
+    display flex
+    flex-direction column
+    justify-content flex-start
+    .quiz
+      height 100%
+
+  .swiper-container
+    height 100%
+    .song-quiz
+      justify-content flex-start
+
+  .blue-button
+    background: #E16259;
+    border: 1px solid #BE5643;
+    border-radius: 6px;
+    max-width 300px
+    margin 0 auto
+    font-family $atlas
+    color white
+    text-align center
+    font-size 22px
     padding 1rem
-    background red
     user-select none
     cursor pointer
-    max-width 240px
-    font-weight 500
-    span
-      font-size: 26px;
-      top: 6px;
-      display: inline-block;
-      position: relative;
-      left: -1px;
-      line-height 0
-    &:first-of-type
-      background #FDDFCC
-      position relative
-      &:before
-        content 'Do you recognize this song?'
-        position absolute
-        top -2rem
-        left 0px
-        transform translate(-122px,-100%)
-        text-align center
-        width 500px
-        font-size 32px
-        font-weight 300
-      @media (max-width: 450px)
-        &:before
-          font-size 24px
+    position relative
+    padding-left 4rem
+
+  .red-button
+    background: #E16259;
+    border: 1px solid #BE5643;
+    border-radius: 6px;
+    max-width 300px
+    margin 0 auto
+    font-family $atlas
+    color white
+    text-align center
+    font-size 22px
+    padding 1rem
+    user-select none
+    cursor pointer
+    position relative
+    padding-left 4rem
+    svg
+      position absolute
+      left 15px
+      top 20px
+    &:active
+      background #bf4d45
+
+  .swiper-slide
+    display flex
+    flex-direction column
+    justify-content center
+    height 100%
+
+  .decades, .years, .redo-buttons
+    width 100%
+    display flex
+    flex-wrap wrap
+    max-width 290px
+    justify-content center
+    margin 0 auto
+    .grey-button
+      max-width 300px
+      background-color rgb(239, 238, 236)
+      color rgb(55, 53, 47)
+  .decades
+    flex-direction row-reverse
+    max-width 400px
+  .years
+    max-width 600px
+
+
+  .grey-button
+    //box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.1), 0px 3px 4px rgba(0, 0, 0, 0.16);
+    color rgba(0,0,0,.8)
+    font-weight 600
+    max-width 100px
+    margin 0 auto
+    border-radius 6px
+    padding 1rem
+    user-select none
+    cursor pointer
+    text-align center
+    font-size 22px
+    margin .5rem
+    &:active
+      background #eee
+
+  .options
+    padding-top 300px
+    div
+      border-radius 6px
+      margin 0 auto
+      margin-bottom 1rem
+      padding 1rem
+      background red
+      user-select none
+      cursor pointer
+      max-width 240px
+      font-weight 500
       span
-        font-size 36px
+        font-size: 26px;
+        top: 6px;
+        display: inline-block;
+        position: relative;
+        left: -1px;
         line-height 0
-    &:nth-of-type(2)
-      background #CFE4F9
-    &:nth-of-type(3)
-      background #E8D5CC
-    &:nth-of-type(4)
-      background #FFCCD2
+      &:first-of-type
+        background #FDDFCC
+        position relative
+        &:before
+          content 'Do you recognize this song?'
+          position absolute
+          top -2rem
+          left 0px
+          transform translate(-122px,-100%)
+          text-align center
+          width 500px
+          font-size 32px
+          font-weight 300
+        @media (max-width: 450px)
+          &:before
+            font-size 24px
+        span
+          font-size 36px
+          line-height 0
+      &:nth-of-type(2)
+        background #CFE4F9
+      &:nth-of-type(3)
+        background #E8D5CC
+      &:nth-of-type(4)
+        background #FFCCD2
