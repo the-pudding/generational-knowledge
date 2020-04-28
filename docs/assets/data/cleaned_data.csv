@@ -649,7 +649,7 @@ Peabo Bryson and Regina Bell,A Whole New World,4793,492332856589fcd07e714f7156ad
 Tag Team,Whoomp! There It Is,4794,056674ff7f920e72f49bc0bef2a8ec760bae0a9f,1993
 Ace Of Base,All That She Wants,4795,7e9994d654624d318608c9d46b1734ec552f040f,1993
 SWV,Right Here ,4796,2e10fc709c55a4c5e136c075da1c27f6aae1c9ae,1993
-Dr. Dre,"Nuthin' But A ""G"""" Thang""",4797,970d6ad50f3987f5a2bea10e5ce607acb9fb27d9,1993
+Dr. Dre,Nuthin' But A G Thang,4797,970d6ad50f3987f5a2bea10e5ce607acb9fb27d9,1993
 Xscape,Just Kickin' It,4798,70114690c1f632858b43f7d29c336acde23500e3,1993
 H-Town,Knockin' Da Boots,4799,31a29825958c27382d124cb249ca24c093d5430f,1993
 Boyz II Men,In The Still Of The Nite ,4800,53d755b03a861d45a7978b6107047ca56366ce0d,1992
@@ -962,7 +962,7 @@ Bill Medley,I've Had The Time Of My Life,7065,b952ddcf02328abc149981bced79673ec1
 Madonna,Open Your Heart,7066,9c84995232c9a22eb9bbf482faec68cfe1f97191,1987
 Kim Wilde,You Keep Me Hangin' On,7067,676a4a76b7f07730712ae4e43cd1bcd4c5bf2984,1987
 Lisa Lisa and Cult Jam,Lost In Emotion,7068,a36886d03aa7c3a28d090e7fb1188c9e2bf8cedd,1987
-Billy Idol,"Mony Mony ""Live""""""",7069,3da9ac784163acd2e3d738f889626ca1d5c20eb8,1987
+Billy Idol,Mony Mony,7069,3da9ac784163acd2e3d738f889626ca1d5c20eb8,1987
 Huey Lewis and The News,Jacob's Ladder,7070,11213955bb454dde07a8956a4e31bccc65f2a79c,1987
 Madonna,Who's That Girl,7071,2899b6c5a8aa522e6291d9485b9a2e3f16be7d04,1987
 Michael Jackson,I Just Can't Stop Loving You,7072,39a9300bf56bd2756e674d491e8fe255bf17dc6d,1987
@@ -1248,7 +1248,7 @@ Neil Diamond,Love On The Rocks,9576,4a9387d3b5a438c86b7ca3f4895d43b72d1862cc,198
 Smokey Robinson,Being With You,9577,c3b90f72ac7a3abd338853079958aaba81e7de22,1981
 George Harrison,All Those Years Ago,9578,e42b4eda28063a7940156e1fadee59d6f53690e5,1981
 Juice Newton,Queen Of Hearts,9579,ecf2e9972473bfb548f88d61cea0201575fd2d8f,1981
-Joey Scarbury,"Theme From ""Greatest American Hero"""" ",9580,e30ee1a3e40b90edcb8f4b6a13639b78d5182633,1981
+Joey Scarbury,Theme From Greatest American Hero,9580,e30ee1a3e40b90edcb8f4b6a13639b78d5182633,1981
 Stevie Nicks,Stop Draggin' My Heart Around,9581,72c884ed738fa7e3afdbb23bd003f8db623c958d,1981
 "Earth, Wind and Fire",Let's Groove,9582,23c9b9b6980c1af1616ac8dbbacfd9354bf97062,1981
 Styx,The Best Of Times,9583,2454bf11addbcea14d0a98c9dcf1182818e6564b,1981
@@ -1450,13 +1450,13 @@ Rick Dees,Disco Duck ,11852,e20f4b8f1e902b44c94ef84c25be4c545f9c9af8,1976
 Barry Manilow,I Write The Songs,11853,1ef80b3f0a6504f3abcfbfe7dfdc903ca8be9f29,1976
 Ohio Players,Love Rollercoaster,11854,24edae547e4a193d47716cac0285f1dc5b3fecaf,1975
 "Sylvers, The",Boogie Fever,11855,a6cc797a98ee29f48796bdd27e574b5cd08a0a8d,1976
-Diana Ross,"Theme From ""Mahogany"""" ",11856,58a6749c1466fb2b910e9d853ae16a12e47950f5,1976
+Diana Ross,Theme From Mahogany,11856,58a6749c1466fb2b910e9d853ae16a12e47950f5,1976
 Bee Gees,You Should Be Dancing,11857,c85c16a611bbc38498233da90af2881bafcdfdc8,1976
 Bellamy Brothers,Let Your Love Flow,11858,c86fab79bd5fcb0dd0eb1786aa88d039a1f1293f,1976
 C. W. McCall,Convoy,11859,e498b3372a0a3400173b02c1a6532fa01f726493,1976
 John Sebastian,Welcome Back,11860,1a10fb199126b1bd3ddf754698d4395d4920a4d6,1976
 "Miracles, The",Love Machine ,11861,fc568626d2ec2911e6e930e6b52da6ce6de0f8db,1976
-Rhythm Heritage,"Theme From ""S.W.A.T.""""""",11862,5578e794e548d17747e09091744af2b20412542b,1976
+Rhythm Heritage,"Theme From S.W.A.T.,11862,5578e794e548d17747e09091744af2b20412542b,1976
 Bay City Rollers,Saturday Night,11863,58eccbe97788017f8711cf33acd12e5500a87c98,1975
 Steve Miller Band,Rock'n Me,11864,37858a77e3822aadecc5b3cf27d2fb9d3ddeb1f2,1976
 Spinners,The Rubberband Man,11865,e91acc7504869e1db0c559fe397708cab586edfd,1976
@@ -1722,7 +1722,7 @@ Donny Osmond,Go Away Little Girl,14572,2bbeac594509369b365392ce1a4f9389fdecb6aa,
 Sly and the Family Stone,Family Affair,14573,922d634679ea0d4226acfa315ac704f5b12caf42,1971
 Cher,"Gypsys, Tramps and Thieves",14574,146bfd79f085ed8b1cbd14474063c025ddb4a5e4,1971
 "Temptations, The",Just My Imagination ,14575,be3aa331f877ebe373d881061387483819562f64,1971
-Isaac Hayes,"Theme From ""Shaft""""""",14576,9a22381d7a3541dc263e857ca12a45a4e8c74bb2,1971
+Isaac Hayes,Theme From Shaft,14576,9a22381d7a3541dc263e857ca12a45a4e8c74bb2,1971
 Janis Joplin,Me And Bobby McGee,14577,d24806aa02d1acb4b7b77ba99440e10e15cb9894,1971
 "Rolling Stones, The",Brown Sugar,14578,1927680fe07bbba4c44e57e2af63d04de4527c78,1971
 "Raiders, The",Indian Reservation ,14579,a3081e26a942dd6b7da4fa2bf5a754110485752e,1971
@@ -2283,7 +2283,7 @@ Arthur Lyman Group,Yellow Bird,21526,7a84d4f0038d34a5152703d1c7d4c437354fa8b0,19
 Ral Donner,You Don't Know What You've Got ,21527,40edc3bcab66158c4310352dc2ca514c609d1ae8,1961
 Timi Yuro,Hurt,21528,1e9cf219aaf3c5cf56ee40c8825a4d6f918a6bcb,1961
 Elvis Presley,Marie's The Name His Latest Flame,21529,a26398c1fab71f923251e6d7fc981fcb428b2f74,1961
-Percy Faith,"The Theme From ""A Summer Place""""""",22160,8312667a50c3908c5aea84554eefb2812159d2fb,1960
+Percy Faith,The Theme From A Summer Place,22160,8312667a50c3908c5aea84554eefb2812159d2fb,1960
 Elvis Presley,Are You Lonesome To-Night?,22161,97ebe5aaca81ad0d6a610257212fe1c89279c761,1960
 Elvis Presley,It's Now Or Never,22162,d58680d1825633ca41a9e78edf8a4bc585632e32,1960
 "Everly Brothers, The",Cathy's Clown,22163,69c63a844f61f0073d8c37052cef53ce028e151d,1960
@@ -2340,7 +2340,7 @@ Wilbert Harrison,Kansas City,22773,229ecb0290b62f35603f0dd61156766075eb3b9c,1959
 Elvis Presley,A Big Hunk O' Love,22774,5a8b0818320492390408539f892077864c30c52a,1959
 "Fleetwoods, The",Mr. Blue,22775,c5b0e056b84e34dd0a48ee14717c98eb69a05c74,1959
 Frankie Avalon,Why,22776,e61f84f51491a5ecdf8755a7d319cd124791234b,1959
-"Dave ""Baby"" Cortez",The Happy Organ,22777,cc7d5d31a319e5354f8c5d2a69110c20339ccdb5,1959
+Dave Cortez,The Happy Organ,22777,cc7d5d31a319e5354f8c5d2a69110c20339ccdb5,1959
 Paul Anka,Put Your Head On My Shoulder,22778,22e1b816dcfdcc8969ef2d833eab865d1952bd29,1959
 Lloyd Price,Personality,22779,083365ffe5ef17bdbd233dc4fbab13e2370ef9c7,1959
 "Coasters, The",Charlie Brown,22780,9282c5a7122ec3dfe3acc9b9f1f049b9a1330726,1959
