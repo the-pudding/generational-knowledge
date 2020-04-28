@@ -234,12 +234,12 @@
       margin 0 auto
       margin-bottom 1rem
     .space
-      height 2rem
+      height 0rem
       display block
     .quiz-end
       max-width 800px
       margin 0 auto
-      padding-top 3rem
+      padding-top 1rem
       width 95%
       display flex
       flex-wrap wrap
@@ -247,6 +247,9 @@
         margin-bottom 50px
         max-width 400px
         flex-grow 1
+        @media (max-width: 450px)
+          width 100%
+
     .quiz-end-section-title
       margin 0
       display inline-block
@@ -555,11 +558,10 @@
           content 'Do you recognize this song?'
           position absolute
           top -2rem
-          left 0px
-          transform translate(0px,-100%)
+          left 50%
+          transform translate(-50%,-100%)
           text-align center
-          max-width 500px
-          width 95%
+          width 300px
           font-size 32px
           font-weight 300
         @media (max-width: 450px)

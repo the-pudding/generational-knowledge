@@ -22,6 +22,7 @@ let slideOffSet = 4;
 let songMap = null;
 let hasExistingData = false;
 let formatComma = d3.format(",");
+let genSelected = null;
 
 
 let slideChangeSpeed = 350;
@@ -36,7 +37,7 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
-let decadeCustom = {9:["3078","4441","3077"],0:["1532","2144","2445"],8:["7845","8257","6687"],7:["11369","15200","13441"],6:["16525","17218","20821"]};
+let decadeCustom = {9:["3078","4441","3077"],0:["1532","2144","2445"],8:["7845","8257","6687"],7:["11369","15205","13441"],6:["16525","17218","20821"]};
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -125,6 +126,8 @@ function changeSong(songNumber){
 
   songCount = songCount + 1;
   var song = songs[songCount];
+  console.log(songs);
+  console.log(song);
   var url = song.song_url;
 
   upcomingSound = new Howl({
@@ -354,7 +357,8 @@ function init() {
   slideController();
   //
   var decadeSelector = d3.scaleQuantize().domain([0,1])
-    .range([0,6,7,8,9])
+    .range([7])
+    //.range([0,6,7,8,9])
 
   songDecades = decadeSelector(Math.random());
   d3.selectAll(".song-decade").text(function(d){
@@ -407,7 +411,9 @@ function setupDB() {
     // d3.select(".decade-slide").remove();
     // d3.select(".year-slide").remove();
     // slideOffSet = slideOffSet - 2;
-    yearSelected = answers["year"]
+    yearSelected = answers["year"];
+    genSelected = getGeneration(yearSelected);
+
     answers["answers"].forEach(function(d){
       dbOutput.push(d);
       let songInfo = uniqueSongMap.get(d.key);
@@ -505,10 +511,9 @@ function updateOnCompletion(){
   })
 }
 
-
 function postAnalysis(data){
 
-  let genSelected = getGeneration(yearSelected);
+  genSelected = getGeneration(yearSelected);
   delete data["columns"];
   let totalEntries = 0;
 
@@ -672,13 +677,18 @@ function postAnalysis(data){
     });
   }
   function buildOutList(song){
-    d3.select(".compare-year").text(song.year)
-    d3.selectAll(".baseline-year").text(yearSelected - (2000 - song.year));
+
+    d3.select(".compare-year").text(song.year);
+    d3.selectAll(".delta").text(2020 - song.year);
+
+    console.log(yearSelected);
+
+    d3.selectAll(".baseline-year").text(yearSelected - (2020 - song.year));
     let container = d3.select(".songs-that-are-old");
 
 
     let songList = container.selectAll("div").data(uniqueSongs.filter(function(d){
-        return d.year == (yearSelected - (2000 - song.year));
+        return d.year == (yearSelected - (2020 - song.year));
       }).slice(0,10)).enter().append("div").attr("class","row");
 
     songList.append("div")
