@@ -160,8 +160,31 @@ function slideController(){
     mySwiper.slideNext();
   });
 
-  d3.select(".decade-slide").selectAll(".grey-button").on("click",function(d){
+  d3.select(".decade-slide").select(".new-user").selectAll(".grey-button").on("click",function(d){
+
     let decadeSelected = d3.select(this).text().slice(2,3);
+
+    d3.select(".year-slide").selectAll(".grey-button").each(function(d,i){
+      var prefix = "19"+decadeSelected;
+      if(decadeSelected == 0 || decadeSelected == 1){
+        var prefix = "20"+decadeSelected;
+      }
+      d3.select(this).text(prefix+(i));
+    })
+    mySwiper.slideNext(slideChangeSpeed, true);
+  });
+
+  d3.select(".decade-slide").select(".old-user").select(".old-top").selectAll(".grey-button").on("click",function(d){
+    mySwiper.slideTo(slideOffSet-1, slideChangeSpeed, true);
+  });
+
+  d3.select(".decade-slide").select(".old-user").select(".old-bottom").selectAll(".grey-button").on("click",function(d){
+
+    let decadeSelected = d3.select(this).text().slice(2,3);
+
+    dbOutput = [];
+    db.clear();
+    db.setup();
 
     d3.select(".year-slide").selectAll(".grey-button").each(function(d,i){
       var prefix = "19"+decadeSelected;
@@ -408,11 +431,14 @@ function setupDB() {
   if(answers){
     hasExistingData = true;
 
-    // d3.select(".decade-slide").remove();
-    // d3.select(".year-slide").remove();
-    // slideOffSet = slideOffSet - 2;
     yearSelected = answers["year"];
     genSelected = getGeneration(yearSelected);
+
+    d3.select(".new-user").style("display","none")
+    d3.select(".old-user").style("display","flex")
+    d3.selectAll(".old-bday").text(yearSelected);
+
+
 
     answers["answers"].forEach(function(d){
       dbOutput.push(d);
@@ -420,8 +446,8 @@ function setupDB() {
       songOutput.push({"song_url":songInfo.song_url,"key":d.key,"artist":songInfo.artist,"title":songInfo.title,"text":answersKey[d.answer].text,"answer":d.answer})
     })
     //remove this when staging live
-    quizOutput();
-    updateOnCompletion();
+    // quizOutput();
+    // updateOnCompletion();
   }
 }
 

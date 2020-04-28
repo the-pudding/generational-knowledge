@@ -61,6 +61,7 @@ function setupUserData() {
     let id = window.localStorage.getItem('pudding_song_id');
     if (!id) {
       id = generateID({ chron: true, numbers: false });
+      console.log(id);
       window.localStorage.setItem('pudding_song_id', id);
     }
 
@@ -94,15 +95,17 @@ function connect() {
 }
 
 function clear() {
-  // console.log("clearing");
-  // localStorage.removeItem('pudding_song_id');
-  // localStorage.removeItem('pudding_song_answers');
+  console.log("clearing");
+  localStorage.removeItem('pudding_song_id');
+  localStorage.removeItem('pudding_song_answers');
 }
 
 function setup() {
-  if (window.location.host.includes('localhost')) clear();
+  //if (window.location.host.includes('localhost')) clear();
   userData = setupUserData();
-  if (!userData.finished) connect();
+  if(!connected){
+    if (!userData.finished) connect();
+  }
   console.log({ userData });
 }
 
@@ -165,6 +168,7 @@ export default {
   getAnswers,
   getSeenResults,
   setResults,
+  clear,
   hasAnswers,
   setReturner,
   getReturner,
