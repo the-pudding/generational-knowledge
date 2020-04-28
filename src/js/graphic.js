@@ -415,6 +415,7 @@ function setupDB() {
     })
     //remove this when staging live
     quizOutput();
+    updateOnCompletion();
   }
 }
 
@@ -495,6 +496,16 @@ function getGeneration(year){
   return gen;
 }
 
+function updateOnCompletion(){
+  d3.select(".non-gen-z").style("display",function(d){
+    if(genSelected == "x"){
+      return "none"
+    }
+    return null;
+  })
+}
+
+
 function postAnalysis(data){
 
   let genSelected = getGeneration(yearSelected);
@@ -550,7 +561,12 @@ function postAnalysis(data){
   //
   let dataForPostMap = d3.map(dataForPost,function(d){return d.key});
   d3.select(".total-entries").text(formatComma(totalEntries));
-
+  d3.select(".non-gen-z").style("display",function(d){
+    if(genSelected == "x"){
+      return "none"
+    }
+    return null;
+  })
 
   function compareThingYouKnewLeast(){
     let container = d3.select(".song-didnt-know-compare");
@@ -630,7 +646,6 @@ function postAnalysis(data){
   }
 
   function buildBarChart(songMatch,container){
-    console.log(songMatch);
     let barScale = d3.scaleLinear().domain([0,d3.max(Object.values(songMatch.percents).map(function(d){return 1-d;}))]).range([0,100])
 
     let row = container.select(".bar-chart").selectAll("div").data(["z","m","x","b"]).enter("div").append("div").attr("class","row")
@@ -767,11 +782,13 @@ function postAnalysis(data){
 
   function knowledgeHeatmap(){
     let container = d3.select(".grid-chart");
-    console.log(dataForPost);
     let row = container.selectAll("div").data(dataForPost).enter().append("div").attr("class","row");
     row.append("p").attr("class","row-label").html(function(d){
       return d.title+"<br><span>"+artistClean(d.artist)+" "+d.year+"</span>";
     })
+
+    container.insert("div",":first-child").attr("class","row").html("<div class='row-label'></div><div class='box-container'><div class='box'></div> <div class='box'></div> <div class='box'></div> <div class='box'></div> </div>")
+
 
     let backgroundScale = d3.interpolateLab("white", "rgb(255,107,124)");
 
@@ -779,7 +796,6 @@ function postAnalysis(data){
       var thing = Object.keys(d.percents).map(function(e){
           return [e,d.percents[e]]
         });
-
       return thing;
     })
     .enter()
@@ -820,7 +836,11 @@ function postAnalysis(data){
         }
         return .6
       })
+    row.each(function(d,i){
+      if(i==0){
 
+      }
+    })
   }
 
   compareThingYouKnewMost();

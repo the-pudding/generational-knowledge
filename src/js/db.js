@@ -94,9 +94,9 @@ function connect() {
 }
 
 function clear() {
-  // console.log("clearing");
-  // localStorage.removeItem('pudding_song_id');
-  // localStorage.removeItem('pudding_song_answers');
+  console.log("clearing");
+  localStorage.removeItem('pudding_song_id');
+  localStorage.removeItem('pudding_song_answers');
 }
 
 function setup() {

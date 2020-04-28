@@ -2,6 +2,7 @@
   font-family $atlas
   position relative
   color rgb(4,4,4)
+  width 100%
   .color-recognize
     padding: 4px;
     padding-left: 8px;
@@ -49,7 +50,14 @@
       display flex
       margin 0 auto
       margin-bottom 10px
+      z-index -1
       &:first-of-type
+        height 55px
+        background white
+        position sticky
+        top 0px
+        left 0px
+        z-index 1000
         .box-container
           .box
             position relative
@@ -59,7 +67,7 @@
               top 0px
               left 0px
               right 0px
-              transform translate(0,-140%)
+              transform translate(0,198%)
               font-size 13px
               text-align center
             &:after
@@ -69,7 +77,7 @@
               margin 0 auto
               left 0px
               right 0px
-              transform translate(0,-200%)
+              transform translate(0,25%)
               font-size 10px
               width 40px
               text-align center
@@ -91,7 +99,7 @@
                 content 'Ages 55–73'
       .box-container
         display flex
-        width calc(100% - 250px)
+        flex-grow 1
         margin 0
         border-bottom 1px solid rgba(0, 0, 0, 0.21)
         .box
@@ -120,18 +128,16 @@
       .row-label
         //position absolute
         transform translate(0px,0)
-        padding-right 10px
-        padding-bottom 15px
-        padding-top 15px
         font-size 12px
-        width 160px
-        max-width 200px
+        width 100%
+        max-width 140px
         flex-grow 1
         //top 50%
         //left -5px
         text-align right
         line-height 1.3
         margin 0
+        padding 5px
         span
           font-weight 500
           font-size 11px
@@ -140,9 +146,10 @@
     max-width 570px
     margin 0 auto
     margin-bottom 3rem
+    overflow hidden
     .row
       display flex
-      width calc(100% - 160px)
+      width calc(100% - 190px)
       margin 0 auto
       position relative
       margin-bottom 10px
@@ -191,7 +198,7 @@
     //background #f7f7f7
     padding-top 5rem
     .video-container
-      max-width 300px
+      max-width 570px
       margin 0 auto
       video
         width 100%
@@ -200,6 +207,7 @@
       font-size 18px
       font-weight 300
       max-width 570px
+      width 95%
       margin 0 auto
       margin-bottom 1.4rem
     .song-knew-compare
@@ -212,9 +220,10 @@
         margin-bottom 3rem
         display none
     .big-text
-      font-size 48px
+      font-size 36px
       font-weight 400
       max-width 570px
+      width 95%
       margin 0 auto
       line-height 1.3
       margin-bottom 3rem
@@ -231,7 +240,7 @@
       max-width 800px
       margin 0 auto
       padding-top 3rem
-      width 90%
+      width 95%
       display flex
       flex-wrap wrap
       .quiz-end-section
@@ -330,11 +339,14 @@
       transform translate(-33px,0%)
 
   .big-text
-    font-size 32px
+    font-size 36px
     font-weight 400
     max-width 500px
+    width 95%
     margin 0 auto
+    line-height 1.3
     margin-bottom 3rem
+
 
   .med-text
     font-size 18px
@@ -342,9 +354,11 @@
     max-width 500px
     margin 0 auto
     margin-bottom 1rem
+    width 95%
   .mid-text
     font-weight 400
     font-size 24px
+    width 95%
   .song
     display flex
     position absolute
@@ -542,9 +556,10 @@
           position absolute
           top -2rem
           left 0px
-          transform translate(-122px,-100%)
+          transform translate(0px,-100%)
           text-align center
-          width 500px
+          max-width 500px
+          width 95%
           font-size 32px
           font-weight 300
         @media (max-width: 450px)
