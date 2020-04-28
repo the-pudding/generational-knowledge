@@ -432,7 +432,7 @@ function quizOutput(){
     .entries(songOutput)
 
   var totalCount = songOutput.length;
-  var knewCount = Math.round(songOutput.filter(function(d){return +d.answer < 2}).length/songOutput.length*100);
+  var knewCount = Math.round(songOutput.filter(function(d){return +d.answer > 1}).length/songOutput.length*100);
 
   d3.select(".know").text(knewCount);
   d3.select(".total").text(totalCount);

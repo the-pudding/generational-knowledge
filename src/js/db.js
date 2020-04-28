@@ -138,16 +138,12 @@ function update(output) {
   //   store: min && max ? 'true' : 'false',
   // };
   userData.answers = output
+  console.log(hasStorage);
   if (hasStorage)
     window.localStorage.setItem(
       'pudding_song_answers',
       JSON.stringify(userData.answers)
     );
-
-  // const { id, answers } = userData;
-  // const submissions = getSubmissions(answers);
-
-  // if (!DEV && Object.keys(submissions).length && connected) {
 
   if (!DEV && connected) {
     firebaseDB
