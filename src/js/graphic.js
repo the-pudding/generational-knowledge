@@ -330,7 +330,7 @@ function init() {
 
       window.setTimeout(function(d){
         mySwiper.slideNext(slideChangeSpeed, true);
-      },2000)
+      },3000)
     }
     else if(d3.select(".swiper-slide-active").classed("song-quiz")){
       changeSong(songCount);
