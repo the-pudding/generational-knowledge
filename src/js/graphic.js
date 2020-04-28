@@ -382,6 +382,8 @@ function init() {
 
     shuffle(songs);
 
+    console.log(hasExistingData);
+
     if(!hasExistingData){
       for (var song in decadeCustom[songDecades]){
         let customSong = decadeCustom[songDecades][song];
@@ -399,8 +401,9 @@ function init() {
 function setupDB() {
   db.setup();
   const answers = db.getAnswers();
-  hasExistingData = true;
   if(answers){
+    hasExistingData = true;
+
     // d3.select(".decade-slide").remove();
     // d3.select(".year-slide").remove();
     // slideOffSet = slideOffSet - 2;
