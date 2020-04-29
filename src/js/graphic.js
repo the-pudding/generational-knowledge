@@ -251,6 +251,7 @@ function slideController(){
 
     dbOutput.push({"key":songPlaying.key,"answer":i})
 
+
     if(d3.select(".swiper-slide-active").classed("last-song")){
 
       mySwiper.slideNext(slideChangeSpeed, true);
@@ -259,10 +260,19 @@ function slideController(){
         sound.stop();
       }
 
-      d3.transition()
-          .delay(0)
-          .duration(1000)
-          .tween("scroll", scrollTween(window.innerHeight));
+      d3.select(".output").transition().duration(0).style("display","block").on("end",function(d){
+
+        d3.transition()
+            .delay(100)
+            .duration(1000)
+            .tween("scroll", scrollTween(window.innerHeight));
+
+        d3.select("footer").style("display","block");
+
+      })
+
+
+
 
       function scrollTween(offset) {
         return function() {
@@ -274,8 +284,7 @@ function slideController(){
       quizOutput();
 
       quizCompleted = true;
-      db.update({"year":yearSelected,"answers":dbOutput});
-      // db.update({ key: term, min, max, order });
+      //db.update({"year":yearSelected,"answers":dbOutput});
     }
     else {
       let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
@@ -418,6 +427,10 @@ function init() {
 
   loadData([dataURL,'cleaned_data.csv']).then(result => {
 
+    let container = d3.select(".start-slide");
+    container.select(".red-button").style("display","block");
+    container.select(".grey-button").style("display","none");
+
     uniqueSongs = result[1];
     uniqueSongMap = d3.map(result[1],function(d){
       return d.key;
@@ -432,15 +445,12 @@ function init() {
 
     shuffle(songs);
 
-    console.log(hasExistingData);
-
     if(!hasExistingData){
       for (var song in decadeCustom[songDecades]){
         let customSong = decadeCustom[songDecades][song];
         songs.unshift(uniqueSongMap.get(customSong));
       }
     }
-
 
     postAnalysis(result[0])
 
