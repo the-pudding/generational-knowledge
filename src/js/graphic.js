@@ -316,6 +316,8 @@ function slideController(){
 
 function init() {
 
+  console.log("updated");
+
   songBubbles = d3.select(".song").selectAll("div").data(d3.range(d3.selectAll(".song-quiz").size())).enter().append("div").attr("class","song-bubble");
   //
   mySwiper = new Swiper ('.swiper-container', {
