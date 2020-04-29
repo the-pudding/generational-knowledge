@@ -24,7 +24,7 @@ let songMap = null;
 let hasExistingData = false;
 let formatComma = d3.format(",");
 let genSelected = null;
-
+let backgroundScale = d3.interpolateLab("rgb(207, 228, 249)", "rgb(255,107,124)");
 
 let slideChangeSpeed = 350;
 let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
@@ -66,6 +66,7 @@ function playPauseSong(song){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
+      volume: 0.5
     });
 
     sound.on("end",function(){
@@ -87,6 +88,7 @@ function playPauseSong(song){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
+      volume: 0.5
     });
 
     sound.on("end",function(){
@@ -149,6 +151,7 @@ function changeSong(songNumber){
     src:[src],
     format:['mpeg'],
     autoUnlock:true,
+    volume: 0.5,
     onplayerror: function() {
       console.log("error");
       sound.once('unlock', function() {
@@ -175,6 +178,7 @@ function slideController(){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
+      volume: 0.5
     });
 
     mySwiper.slideNext();
@@ -462,10 +466,10 @@ function setupDB() {
     answers["answers"].forEach(function(d){
       dbOutput.push(d);
       let songInfo = uniqueSongMap.get(d.key);
-      songOutput.push({"song_url":songInfo.song_url,"key":d.key,"artist":songInfo.artist,"title":songInfo.title,"text":answersKey[d.answer].text,"answer":d.answer})
+      songOutput.push({"song_url":songInfo.song_url,"key":d.key,"artist":songInfo.artist,"title":songInfo.title,"text":answersKey[d.answer].text,"answer":d.answer,"year":songInfo.year})
     })
     //remove this when staging live
-    // quizOutput();
+    quizOutput();
     // updateOnCompletion();
   }
 }
@@ -484,7 +488,7 @@ function quizOutput(){
     .entries(songOutput)
 
   var totalCount = songOutput.length;
-  var knewCount = Math.round(songOutput.filter(function(d){return +d.answer > 1}).length/songOutput.length*100);
+  var knewCount = songOutput.filter(function(d){return +d.answer > 1}).length;
 
   d3.select(".know").text(knewCount);
   d3.select(".total").text(totalCount);
@@ -529,7 +533,7 @@ function quizOutput(){
   sectionItemRow.append("p")
     .attr("class","quiz-end-section-item-text")
     .html(function(d){
-      return "<span class='bold'>"+d.title + "</span> by " + d.artist;
+      return "<span class='bold'>"+d.title + "</span> by " + d.artist + ", "+d.year;
     })
 }
 
@@ -707,11 +711,13 @@ function postAnalysis(data){
       });
 
     row.append("p").attr("class","row-label").html(function(d){return genLabel[d]+"<span>Ages "+genLabelAge[d]+"</span>"});
+
     let rowBar = row.append("div").attr("class","row-bar").style("width",function(d){
         return barScale(1-songMatch.percents[d])+"%"
       })
       .style("background-color",function(d){
-        return "rgba(255,137,63,"+barScale(1-songMatch.percents[d])/100+")"
+        console.log(barScale(1-songMatch.percents[d]));
+        return backgroundScale(barScale(1-songMatch.percents[d])/100);
       })
 
     rowBar.append("p").attr("class","row-percent").html(function(d,i){
@@ -731,6 +737,9 @@ function postAnalysis(data){
     d3.selectAll(".baseline-year").text(yearSelected - (2020 - song.year));
     let container = d3.select(".songs-that-are-old");
 
+    if(yearSelected - (2020 - song.year)){
+      d3.select(".songs-that-are-old-container").style("display","none")
+    }
 
     let songList = container.selectAll("div").data(uniqueSongs.filter(function(d){
         return d.year == (yearSelected - (2020 - song.year));
@@ -844,12 +853,9 @@ function postAnalysis(data){
 
     container.insert("div",":first-child").attr("class","row").html("<div class='row-label'></div><div class='box-container'><div class='box'></div> <div class='box'></div> <div class='box'></div> <div class='box'></div> </div>")
 
-
-    let backgroundScale = d3.interpolateLab("white", "rgb(255,107,124)");
-
     let box = row.append("div").attr("class","box-container").selectAll("div").data(function(d){
       var thing = Object.keys(d.percents).map(function(e){
-          return [e,d.percents[e]]
+          return [e,1-d.percents[e]]
         });
       return thing;
     })

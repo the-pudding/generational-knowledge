@@ -78,7 +78,6 @@ function recircHTML() {
 function init() {
   loadStories(data => {
     storyData = data;
-
     recircHTML();
   });
 }
