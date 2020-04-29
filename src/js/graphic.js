@@ -246,8 +246,8 @@ function slideController(){
       })
       .style("opacity",1)
       ;
-
-    songOutput.push({"song_url":songPlaying.song_url,"key":songPlaying.key,"artist":songPlaying.artist,"title":songPlaying.title,"text":d3.select(this).text(),"answer":i});
+    console.log(songPlaying);
+    songOutput.push({"song_url":songPlaying.song_url,"key":songPlaying.key,"artist":songPlaying.artist,"title":songPlaying.title,"text":d3.select(this).text(),"answer":i, "year":songPlaying.year});
 
     dbOutput.push({"key":songPlaying.key,"answer":i})
 
@@ -482,7 +482,7 @@ function setupDB() {
     })
     //remove this when staging live
     quizOutput();
-    // updateOnCompletion();
+    updateOnCompletion();
   }
 }
 
@@ -498,6 +498,8 @@ function quizOutput(){
       return +a - +b;
     })
     .entries(songOutput)
+
+  console.log(songOutput);
 
   var totalCount = songOutput.length;
   var knewCount = songOutput.filter(function(d){return +d.answer > 1}).length;
