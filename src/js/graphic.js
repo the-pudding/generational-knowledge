@@ -284,7 +284,7 @@ function slideController(){
       quizOutput();
 
       quizCompleted = true;
-      //db.update({"year":yearSelected,"answers":dbOutput});
+      db.update({"year":yearSelected,"answers":dbOutput});
     }
     else {
       let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
