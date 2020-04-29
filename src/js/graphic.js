@@ -24,7 +24,7 @@ let songMap = null;
 let hasExistingData = false;
 let formatComma = d3.format(",");
 let genSelected = null;
-let backgroundScale = d3.interpolateLab("rgb(207, 228, 249)", "rgb(255,107,124)");
+let backgroundScale = d3.interpolateLab("white", "rgb(255,107,124)");
 
 let slideChangeSpeed = 350;
 let fontSizeScale = d3.scaleLinear().domain([0,1]).range([48,64]);
@@ -855,7 +855,7 @@ function postAnalysis(data){
   }
 
   function artistClean(artist){
-    return artist.split(" featuring")[0].split(" Featuring")[0]
+    return artist.split(" featuring")[0].split(" Featuring")[0].replace(", The","");
   }
 
   function knowledgeHeatmap(){
