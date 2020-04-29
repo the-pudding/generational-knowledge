@@ -207,6 +207,7 @@ function slideController(){
     let decadeSelected = d3.select(this).text().slice(2,3);
 
     dbOutput = [];
+    songOutput = [];
     db.clear();
     db.setup();
 
@@ -246,7 +247,7 @@ function slideController(){
       })
       .style("opacity",1)
       ;
-    console.log(songPlaying);
+
     songOutput.push({"song_url":songPlaying.song_url,"key":songPlaying.key,"artist":songPlaying.artist,"title":songPlaying.title,"text":d3.select(this).text(),"answer":i, "year":songPlaying.year});
 
     dbOutput.push({"key":songPlaying.key,"answer":i})
