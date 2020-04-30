@@ -9,7 +9,7 @@ let dataURL = 'data.csv?version='+VERSION
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"get_down_tonight","3077":"gettingjiggy","3435":"semicharmed"};
+let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -407,7 +407,8 @@ function init() {
   slideController();
   //
   var decadeSelector = d3.scaleQuantize().domain([0,1])
-    .range([0,6,7,8,9])
+    .range([6])
+    //.range([0,6,7,8,9])
 
   songDecades = decadeSelector(Math.random());
   d3.selectAll(".song-decade").text(function(d){
