@@ -9,7 +9,7 @@ let dataURL = 'data.csv?version='+VERSION
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"get_down_tonight","3077":"gettingjiggy"};
+let overrideAudio = {"12407":"get_down_tonight","3077":"gettingjiggy","3435":"semicharmed"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -41,7 +41,7 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
-let decadeCustom = {9:["3078","4441","3077"],0:["1532","2144","2445","1856"],8:["7845","8257","6687"],7:["11369","15205","13441","12407"],6:["16525","17218","20821"]};
+let decadeCustom = {9:["3078","3435","3077"],0:["1532","2144","2445","1856"],8:["7845","8257","6687"],7:["11369","15205","13441","12407"],6:["16525","17218","20821"]};
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
