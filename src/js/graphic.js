@@ -9,7 +9,7 @@ let dataURL = 'data.csv?version='+VERSION
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866"};
+let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
