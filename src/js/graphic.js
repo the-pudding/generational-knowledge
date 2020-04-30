@@ -285,7 +285,7 @@ function slideController(){
       quizOutput();
 
       quizCompleted = true;
-      db.update({"year":yearSelected,"answers":dbOutput});
+      //db.update({"year":yearSelected,"answers":dbOutput});
     }
     else {
       let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
@@ -607,7 +607,7 @@ function postAnalysis(data){
     let boomValue = data[song]["b"].split("|");
     let boomPercent = boomValue[0]/boomValue[1]
     totalEntries = totalEntries + +boomValue[1] + +genXValue[1] + +genZValue[1] + +milValue[1];
-
+    let rawCount = +boomValue[1] + +genXValue[1] + +genZValue[1] + +milValue[1];
     let count = 0;
 
     if(milPercent || milPercent == 0){
@@ -624,6 +624,7 @@ function postAnalysis(data){
     }
     if(count > 1){
       data[song].percents = {"z":genZPercent,"m":milPercent,"x":genXPercent,"b":boomPercent};
+      data[song]["totalCount"] = rawCount;
       dataForPost.push(data[song])
     }
   }
@@ -861,7 +862,8 @@ function postAnalysis(data){
 
   function knowledgeHeatmap(){
     let container = d3.select(".grid-chart");
-    let row = container.selectAll("div").data(dataForPost).enter().append("div").attr("class","row");
+
+    let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 10;})).enter().append("div").attr("class","row");
     row.append("p").attr("class","row-label").html(function(d){
       return d.title+"<br><span>"+artistClean(d.artist)+" "+d.year+"</span>";
     })

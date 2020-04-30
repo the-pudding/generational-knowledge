@@ -1,115 +1,116 @@
-footer.pudding-footer
-	padding 3rem 1rem
-	font-family $sans
-	margin-top 3rem
-	background #f7f7f7
-
-	.footer-recirc
-		max-width 65rem
-		margin 0 auto
-		&__articles
-			display flex
-			flex-wrap wrap
-			justify-content space-between
-
-		&__article
-			display block
-			width 100%
-			border none
-			margin-bottom 2rem
-			+mq('bp-5')
-				width calc(25% - 1.5rem)
-				margin-right 1.5rem
-				&:last-of-type
-					margin-right 0
-
-		.article__headline
-			font-family $sans-display
-			line-height 1.7
-			font-weight 500
-			margin-top .7rem
-			padding-left 0.5rem
-			font-size 14px
-			@media (max-width: 600px)
-				font-size 16px
-
-
-	.footer-company
-		margin 0 auto
+#content
+	footer.pudding-footer
+		padding 3rem 1rem
+		font-family $sans
 		margin-top 3rem
-		max-width 65rem
-		display flex
-		flex-direction column
-		font-family $sans-display
-		+mq('bp-5')
-			flex-direction row
+		background #f7f7f7
 
-		&__cta
-			order 1
-			margin 2rem 0 0 0
-			width 100%
-			+mq('bp-5')
-				width 22rem
-				margin 0 0 0 2rem
-
-		&__cta-list
-			display flex
-			flex-wrap wrap
-			flex-direction column
-			height 12rem
-			+mq('bp-5')
-				flex-direction column
-
-			li
+		.footer-recirc
+			max-width 65rem
+			margin 0 auto
+			&__articles
 				display flex
-				width 50%
-				margin-bottom 1rem
-				align-items center
-				+mq('bp-5')
-					padding-left 1rem
+				flex-wrap wrap
+				justify-content space-between
 
-				a
+			&__article
+				display block
+				width 100%
+				border none
+				margin-bottom 2rem
+				+mq('bp-5')
+					width calc(25% - 1.5rem)
+					margin-right 1.5rem
+					&:last-of-type
+						margin-right 0
+
+			.article__headline
+				font-family $sans-display
+				line-height 1.7
+				font-weight 500
+				margin-top .7rem
+				padding-left 0.5rem
+				font-size 14px
+				@media (max-width: 600px)
+					font-size 16px
+
+
+		.footer-company
+			margin 0 auto
+			margin-top 3rem
+			max-width 65rem
+			display flex
+			flex-direction column
+			font-family $sans-display
+			+mq('bp-5')
+				flex-direction row
+
+			&__cta
+				order 1
+				margin 2rem 0 0 0
+				width 100%
+				+mq('bp-5')
+					width 22rem
+					margin 0 0 0 2rem
+
+			&__cta-list
+				display flex
+				flex-wrap wrap
+				flex-direction column
+				height 12rem
+				+mq('bp-5')
+					flex-direction column
+
+				li
 					display flex
-					border-bottom 1px solid #999
-					padding-bottom 2px
+					width 50%
+					margin-bottom 1rem
+					align-items center
+					+mq('bp-5')
+						padding-left 1rem
+
+					a
+						display flex
+						border-bottom 1px solid #999
+						padding-bottom 2px
+
+					p
+						font-family $sans-display
+						margin 0
+						padding-top 0.1rem
+						line-height 1
+						font-weight 400
+						color #333
+						font-size 12px
+
+					svg
+						fill $gray
+						stroke none
+						vertical-align middle
+						display none
+						circle, polyline, line
+							fill none
+							stroke $gray
+					.feather-mail path, .feather-lock path, .feather-rss path
+							stroke $gray
+							fill none
+
+			&__about
+				order 0
+				width 100%
+				color $gray
+				display flex
+				flex-direction column
+				+mq('bp-5')
+					width calc(100% - 24rem)
 
 				p
-					font-family $sans-display
 					margin 0
-					padding-top 0.1rem
-					line-height 1
+					font-size 14px
+					line-height 1.7
+					margin-bottom 1rem
 					font-weight 400
 					color #333
-					font-size 12px
-
 				svg
-					fill $gray
-					stroke none
-					vertical-align middle
-					display none
-					circle, polyline, line
-						fill none
-						stroke $gray
-				.feather-mail path, .feather-lock path, .feather-rss path
-						stroke $gray
-						fill none
-
-		&__about
-			order 0
-			width 100%
-			color $gray
-			display flex
-			flex-direction column
-			+mq('bp-5')
-				width calc(100% - 24rem)
-
-			p
-				margin 0
-				font-size 14px
-				line-height 1.7
-				margin-bottom 1rem
-				font-weight 400
-				color #333
-			svg
-				width 8rem
-				margin-bottom 2rem
+					width 8rem
+					margin-bottom 2rem
