@@ -9,10 +9,13 @@ let dataURL = 'data.csv?version='+VERSION
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"get_down_tonight"}
+let overrideAudio = {"12407":"get_down_tonight","3077":"gettingjiggy"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
+let dataForPost = null;
+let order = {"z":["m","x","b"],"m":["z","x","b"],"x":["z","m","b"],"b":["z","m","x"]};
+let dataForPostMap = null;
 let mySwiper = null;
 let songOutput = [];
 let startNew = true;
@@ -51,7 +54,6 @@ const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(5
 function resize() {}
 
 function playPauseSong(song){
-
   if(sound){
     sound.stop();
   }
@@ -66,7 +68,7 @@ function playPauseSong(song){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
-      volume: 0.5
+      volume: 1
     });
 
     sound.on("end",function(){
@@ -223,6 +225,7 @@ function slideController(){
 
   d3.select(".year-slide").selectAll(".grey-button").on("click",function(d){
     yearSelected = d3.select(this).text();
+
     mySwiper.slideNext(slideChangeSpeed, true);
   });
 
@@ -272,9 +275,6 @@ function slideController(){
 
       })
 
-
-
-
       function scrollTween(offset) {
         return function() {
           var i = d3.interpolateNumber(window.pageYOffset || document.documentElement.scrollTop, offset);
@@ -283,7 +283,8 @@ function slideController(){
       }
 
       quizOutput();
-
+      updateOnCompletion();
+      compareThingYouKnewMost();
       quizCompleted = true;
       db.update({"year":yearSelected,"answers":dbOutput});
     }
@@ -299,14 +300,6 @@ function slideController(){
       })
       mySwiper.slideNext(slideChangeSpeed, true);
     }
-
-
-
-
-
-
-
-
   });
 
   d3.selectAll(".redo-slide").selectAll(".grey-button").on("click",function(d){
@@ -316,8 +309,6 @@ function slideController(){
 }
 
 function init() {
-
-  console.log("updated");
 
   songBubbles = d3.select(".song").selectAll("div").data(d3.range(d3.selectAll(".song-quiz").size())).enter().append("div").attr("class","song-bubble");
   //
@@ -482,8 +473,8 @@ function setupDB() {
       songOutput.push({"song_url":songInfo.song_url,"key":d.key,"artist":songInfo.artist,"title":songInfo.title,"text":answersKey[d.answer].text,"answer":d.answer,"year":songInfo.year})
     })
     //remove this when staging live
-    quizOutput();
-    updateOnCompletion();
+    // quizOutput();
+    // updateOnCompletion();
   }
 }
 
@@ -499,8 +490,6 @@ function quizOutput(){
       return +a - +b;
     })
     .entries(songOutput)
-
-  console.log(songOutput);
 
   var totalCount = songOutput.length;
   var knewCount = songOutput.filter(function(d){return +d.answer > 1}).length;
@@ -542,7 +531,7 @@ function quizOutput(){
       return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 40 60" enable-background="new 0 0 100 100" xml:space="preserve" style="height: 22px;width: 21px;"><g style="-ms-transform: translate(-30px,-7px); -webkit-transform: translate(-30px,-7px); transform: translate(-30px,-7px);width: 10px;"><polygon points="51.964,33.94 38.759,43.759 30.945,43.759 30.945,56.247 38.762,56.247 51.964,66.06  "></polygon><path d="M66.906,34.21l-3.661,2.719c2.517,3.828,3.889,8.34,3.889,13.071s-1.372,9.242-3.889,13.072l3.661,2.718   c3.098-4.604,4.786-10.069,4.786-15.79S70.004,38.821,66.906,34.21"></path><path d="M56.376,42.037h-0.317c1.378,2.441,2.126,5.18,2.126,7.963c0,2.79-0.748,5.528-2.126,7.97h0.321l2.516,1.864   c1.738-2.996,2.676-6.383,2.676-9.834s-0.939-6.839-2.676-9.841L56.376,42.037z"></path></g></svg>';
     })
     .on("click",function(d){
-      playPauseSong(d)
+      playPauseSong(d);
     })
 
   sectionItemRow.append("p")
@@ -581,9 +570,7 @@ function postAnalysis(data){
   delete data["columns"];
   let totalEntries = 0;
 
-  let order = {"z":["m","x","b"],"m":["z","x","b"],"x":["z","m","b"],"b":["z","m","x"]};
-
-  let dataForPost = [];
+  dataForPost = [];
 
   for (var song in data){
     if(uniqueSongMap.has(data[song].key)){
@@ -593,6 +580,7 @@ function postAnalysis(data){
       data[song].title = songInfo.title;
       data[song].artist = songInfo.artist;
       data[song].year = songInfo.year;
+      data[song].song_url = songInfo.song_url;
     }
     let percents = {};
     let milValue = data[song]["m"].split("|");
@@ -629,7 +617,8 @@ function postAnalysis(data){
     }
   }
   //
-  let dataForPostMap = d3.map(dataForPost,function(d){return d.key});
+  dataForPostMap = d3.map(dataForPost,function(d){return d.key});
+
   d3.select(".total-entries").text(formatComma(totalEntries));
   d3.select(".non-gen-z").style("display",function(d){
     if(genSelected == "x"){
@@ -638,223 +627,82 @@ function postAnalysis(data){
     return null;
   })
 
-  function compareThingYouKnewLeast(){
-    let container = d3.select(".song-didnt-know-compare");
-    let threshold = .5;
-
-    let songOutputFiltered  = songOutput.filter(function(d){
-      return +d.answer < 2;
-    })
-
-    let songsMatchingThreshold = [];
-
-    //get database percents
-    for (var song in songOutputFiltered){
-
-      if(dataForPostMap.has(songOutputFiltered[song].key)){
-
-        let percents = dataForPostMap.get(songOutputFiltered[song].key).percents;
-        let maxValue = null;
-        let orderForCheck = order[genSelected];
-
-        for (var gen in orderForCheck){
-          if(percents[orderForCheck[gen]] > threshold && percents[genSelected] < percents[orderForCheck[gen]]){
-            maxValue = [orderForCheck[gen],percents[orderForCheck[gen]]];
-            break;
-          }
-        }
-
-        if(maxValue){
-          songOutputFiltered[song].maxValue = maxValue
-          songOutputFiltered[song].percents = percents
-          songsMatchingThreshold.push(songOutputFiltered[song])
-        }
-      }
-    }
-
-
-    // get maximum
-    if(songsMatchingThreshold.length > 0){
-      songsMatchingThreshold = songsMatchingThreshold.sort(function(a,b){
-        return +b.maxValue[1] - a.maxValue[1];
-      })
-      var songMatch = songsMatchingThreshold[0]
-      if(uniqueSongMap.has(songMatch.key)){
-        let songInfo = uniqueSongMap.get(songMatch.key);
-        //console.log(data[song].key);
-        //let songYear = songMap.get(data[song].key).value.year;
-        songMatch.title = songInfo.title;
-        songMatch.artist = songInfo.artist;
-        songMatch.year = songInfo.year;
-
-      }
-
-
-      container.select(".song-knew").html("<span class='bold'>"+songMatch.title+"</span>"+" by "+songMatch.artist);
-      container.select(".song-knew-percent").html(Math.round(songMatch.maxValue[1]*100)+"%");
-      container.select(".song-knew-gen").html(genLabelPossessive[songMatch.maxValue[0]]+" (ages "+genLabelAge[songMatch.maxValue[0]]+")");
-
-      let barScale = d3.scaleLinear().domain([0,d3.max(Object.values(songMatch.percents).map(function(d){return 1-d;}))]).range([0,100])
-
-      let row = container.select(".bar-chart").selectAll("div").data(["z","m","x","b"]).enter("div").append("div").attr("class","row");
-      row.append("p").attr("class","row-label").html(function(d){return genLabel[d]+"<span>Ages "+genLabelAge[d]+"</span>"});
-      let rowBar = row.append("div").attr("class","row-bar").style("width",function(d){
-          return barScale(songMatch.percents[d])+"%"
-        })
-        .style("background-color",function(d){
-          return "rgba(255,107,124,"+barScale(songMatch.percents[d])/100+")"
-        })
-
-      rowBar.append("p").attr("class","row-percent").html(function(d,i){
-        if(i==0){
-          return Math.round((songMatch.percents[d])*100)+"% <span>recognize song</span>";
-        }
-        return Math.round((songMatch.percents[d])*100)+"%"
-      });
-
-    }
-  }
-
-  function buildBarChart(songMatch,container){
-    let barScale = d3.scaleLinear().domain([0,d3.max(Object.values(songMatch.percents).map(function(d){return 1-d;}))]).range([0,100])
-
-    let row = container.select(".bar-chart").selectAll("div").data(["z","m","x","b"]).enter("div").append("div").attr("class","row")
-      .style("display",function(d){
-        if(isNaN(songMatch.percents[d])){
-          return "none"
-        }
-        return null;
-      });
-
-    row.append("p").attr("class","row-label").html(function(d){return genLabel[d]+"<span>Ages "+genLabelAge[d]+"</span>"});
-
-    let rowBar = row.append("div").attr("class","row-bar").style("width",function(d){
-        return barScale(1-songMatch.percents[d])+"%"
-      })
-      .style("background-color",function(d){
-        console.log(barScale(1-songMatch.percents[d]));
-        return backgroundScale(barScale(1-songMatch.percents[d])/100);
-      })
-
-    rowBar.append("p").attr("class","row-percent").html(function(d,i){
-      if(i==0){
-        return Math.round((1-songMatch.percents[d])*100)+"% <span>don&lsquo;t recognize</span>";
-      }
-      return Math.round((1-songMatch.percents[d])*100)+"%"
-    });
-  }
-  function buildOutList(song){
-
-    d3.select(".compare-year").text(song.year);
-    d3.selectAll(".delta").text(2020 - song.year);
-
-    console.log(yearSelected);
-
-    d3.selectAll(".baseline-year").text(yearSelected - (2020 - song.year));
-    let container = d3.select(".songs-that-are-old");
-
-    if(yearSelected - (2020 - song.year)){
-      d3.select(".songs-that-are-old-container").style("display","none")
-    }
-
-    let songList = container.selectAll("div").data(uniqueSongs.filter(function(d){
-        return d.year == (yearSelected - (2020 - song.year));
-      }).slice(0,10)).enter().append("div").attr("class","row");
-
-    songList.append("div")
-      .attr("class","quiz-end-section-item-play")
-      .html(function(d){
-        return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 40 60" enable-background="new 0 0 100 100" xml:space="preserve" style="height: 22px;width: 21px;"><g style="-ms-transform: translate(-30px,-7px); -webkit-transform: translate(-30px,-7px); transform: translate(-30px,-7px);width: 10px;"><polygon points="51.964,33.94 38.759,43.759 30.945,43.759 30.945,56.247 38.762,56.247 51.964,66.06  "></polygon><path d="M66.906,34.21l-3.661,2.719c2.517,3.828,3.889,8.34,3.889,13.071s-1.372,9.242-3.889,13.072l3.661,2.718   c3.098-4.604,4.786-10.069,4.786-15.79S70.004,38.821,66.906,34.21"></path><path d="M56.376,42.037h-0.317c1.378,2.441,2.126,5.18,2.126,7.963c0,2.79-0.748,5.528-2.126,7.97h0.321l2.516,1.864   c1.738-2.996,2.676-6.383,2.676-9.834s-0.939-6.839-2.676-9.841L56.376,42.037z"></path></g></svg>';
-      })
-      .on("click",function(d){
-        playPauseSong(d)
-      })
-    //
-    songList.append("p")
-      .attr("class","quiz-end-section-item-text")
-      .html(function(d){
-        return "<span class='bold'>"+d.title + "</span> by " + d.artist;
-      })
-    //
-
-
-  }
-  function compareThingYouKnewMost(){
-    let container = d3.select(".song-knew-compare");
-    let threshold = .3;
-    //get songs you just quizzed on
-    let songOutputFiltered  = songOutput.filter(function(d){
-      return +d.answer > 1;
-    })
-
-    let songsMatchingThreshold = [];
-
-    //get database percents
-    for (var song in songOutputFiltered){
-      if(dataForPostMap.has(songOutputFiltered[song].key)){
-        let percents = dataForPostMap.get(songOutputFiltered[song].key).percents;
-
-        let minValue = null;
-        let orderForCheck = order[genSelected];
-        for (var gen in orderForCheck){
-          if(percents[orderForCheck[gen]] < threshold && percents[genSelected] > percents[orderForCheck[gen]]){
-            console.log(songOutputFiltered[song]);
-            minValue = [orderForCheck[gen],percents[orderForCheck[gen]]];
-            break;
-          }
-        }
-        if(minValue){
-          songOutputFiltered[song].minValue = minValue
-          songOutputFiltered[song].percents = percents
-          songsMatchingThreshold.push(songOutputFiltered[song])
-        }
-      }
-    }
-
-    //get minimum
-    if(songsMatchingThreshold.length > 0){
-      songsMatchingThreshold = songsMatchingThreshold.sort(function(a,b){
-        return +a.minValue[1] - b.minValue[1];
-      })
-      var songMatch = songsMatchingThreshold[0]
-      if(uniqueSongMap.has(songMatch.key)){
-        let songInfo = uniqueSongMap.get(songMatch.key);
-        //console.log(data[song].key);
-        //let songYear = songMap.get(data[song].key).value.year;
-        songMatch.title = songInfo.title;
-        songMatch.artist = songInfo.artist;
-        songMatch.year = songInfo.year;
-      }
-      container.select(".song-knew").html("<span class='bold'>"+songMatch.title+"</span>"+" by "+songMatch.artist);
-      container.select(".song-knew-percent").html(Math.round((1-songMatch.minValue[1])*100)+"%");
-      container.select(".song-knew-gen").html(genLabelPossessive[songMatch.minValue[0]]+" (ages "+genLabelAge[songMatch.minValue[0]]+")");
-      buildBarChart(songMatch,container)
-      buildOutList(songMatch)
-    }
-    else {
-      container.select(".chart-head").style("display","none");
-      let filteredData = dataForPost.filter(function(d){
-        if(d.percents["z"] > 0 && d.percents["z"] < .6 && d.percents["m"] > .5){
-          return d;
-        }
-      })
-      if(filteredData.length > 0){
-        let song = filteredData[0];
-        if(uniqueSongMap.has(song.key)){
-          let songInfo = uniqueSongMap.get(song.key);
-          //console.log(data[song].key);
-          //let songYear = songMap.get(data[song].key).value.year;
-          song.title = songInfo.title;
-          song.artist = songInfo.artist;
-          song.year = songInfo.year;
-        }
-        container.select(".chart-head-alt").style("display","block");
-        container.select(".chart-head-alt").select(".song-knew").html("<span class='bold'>"+song.title+"</span>"+" by "+song.artist+" ("+song.year+")");
-        buildBarChart(song,container)
-        buildOutList(song)
-      }
-    }
-  }
+  // function compareThingYouKnewLeast(){
+  //   let container = d3.select(".song-didnt-know-compare");
+  //   let threshold = .5;
+  //
+  //   let songOutputFiltered  = songOutput.filter(function(d){
+  //     return +d.answer < 2;
+  //   })
+  //
+  //   let songsMatchingThreshold = [];
+  //
+  //   //get database percents
+  //   for (var song in songOutputFiltered){
+  //
+  //     if(dataForPostMap.has(songOutputFiltered[song].key)){
+  //
+  //       let percents = dataForPostMap.get(songOutputFiltered[song].key).percents;
+  //       let maxValue = null;
+  //       let orderForCheck = order[genSelected];
+  //
+  //       for (var gen in orderForCheck){
+  //         if(percents[orderForCheck[gen]] > threshold && percents[genSelected] < percents[orderForCheck[gen]]){
+  //           maxValue = [orderForCheck[gen],percents[orderForCheck[gen]]];
+  //           break;
+  //         }
+  //       }
+  //
+  //       if(maxValue){
+  //         songOutputFiltered[song].maxValue = maxValue
+  //         songOutputFiltered[song].percents = percents
+  //         songsMatchingThreshold.push(songOutputFiltered[song])
+  //       }
+  //     }
+  //   }
+  //
+  //
+  //   // get maximum
+  //   if(songsMatchingThreshold.length > 0){
+  //     songsMatchingThreshold = songsMatchingThreshold.sort(function(a,b){
+  //       return +b.maxValue[1] - a.maxValue[1];
+  //     })
+  //     var songMatch = songsMatchingThreshold[0]
+  //     if(uniqueSongMap.has(songMatch.key)){
+  //       let songInfo = uniqueSongMap.get(songMatch.key);
+  //       //console.log(data[song].key);
+  //       //let songYear = songMap.get(data[song].key).value.year;
+  //       songMatch.title = songInfo.title;
+  //       songMatch.artist = songInfo.artist;
+  //       songMatch.year = songInfo.year;
+  //
+  //     }
+  //
+  //
+  //     container.select(".song-knew").html("<span class='bold'>"+songMatch.title+"</span>"+" by "+songMatch.artist);
+  //     container.select(".song-knew-percent").html(Math.round(songMatch.maxValue[1]*100)+"%");
+  //     container.select(".song-knew-gen").html(genLabelPossessive[songMatch.maxValue[0]]+" (ages "+genLabelAge[songMatch.maxValue[0]]+")");
+  //
+  //     let barScale = d3.scaleLinear().domain([0,d3.max(Object.values(songMatch.percents).map(function(d){return 1-d;}))]).range([0,100])
+  //
+  //     let row = container.select(".bar-chart").selectAll("div").data(["z","m","x","b"]).enter("div").append("div").attr("class","row");
+  //     row.append("p").attr("class","row-label").html(function(d){return genLabel[d]+"<span>Ages "+genLabelAge[d]+"</span>"});
+  //     let rowBar = row.append("div").attr("class","row-bar").style("width",function(d){
+  //         return barScale(songMatch.percents[d])+"%"
+  //       })
+  //       .style("background-color",function(d){
+  //         return "rgba(255,107,124,"+barScale(songMatch.percents[d])/100+")"
+  //       })
+  //
+  //     rowBar.append("p").attr("class","row-percent").html(function(d,i){
+  //       if(i==0){
+  //         return Math.round((songMatch.percents[d])*100)+"% <span>recognize song</span>";
+  //       }
+  //       return Math.round((songMatch.percents[d])*100)+"%"
+  //     });
+  //
+  //   }
+  // }
 
   function artistClean(artist){
     return artist.split(" featuring")[0].split(" Featuring")[0].replace(", The","");
@@ -865,8 +713,11 @@ function postAnalysis(data){
 
     let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 10;}).sort(function(a,b){return b.totalCount - a.totalCount})).enter().append("div").attr("class","row");
     row.append("p").attr("class","row-label").html(function(d){
-      return d.title+"<br><span>"+artistClean(d.artist)+" "+d.year+"</span>";
-    })
+      return d.title+' <span>'+artistClean(d.artist)+' '+d.year+"</span><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' viewBox='0 19 40 40' enable-background='new 0 0 100 100' xml:space='preserve' style='height: 11px;width: 18px;'><g style='-ms-transform: translate(-30px,-7px); -webkit-transform: translate(-30px,-7px); transform: translate(-30px,-7px);width: 10px;'><polygon points='51.964,33.94 38.759,43.759 30.945,43.759 30.945,56.247 38.762,56.247 51.964,66.06  '></polygon><path d='M66.906,34.21l-3.661,2.719c2.517,3.828,3.889,8.34,3.889,13.071s-1.372,9.242-3.889,13.072l3.661,2.718   c3.098-4.604,4.786-10.069,4.786-15.79S70.004,38.821,66.906,34.21'></path><path d='M56.376,42.037h-0.317c1.378,2.441,2.126,5.18,2.126,7.963c0,2.79-0.748,5.528-2.126,7.97h0.321l2.516,1.864   c1.738-2.996,2.676-6.383,2.676-9.834s-0.939-6.839-2.676-9.841L56.376,42.037z'></path></g></svg>";
+      })
+      .on("click",function(d){
+        playPauseSong(d)
+      });
 
     container.insert("div",":first-child").attr("class","row").html("<div class='row-label'></div><div class='box-container'><div class='box'></div> <div class='box'></div> <div class='box'></div> <div class='box'></div> </div>")
 
@@ -921,14 +772,148 @@ function postAnalysis(data){
     })
   }
 
-  compareThingYouKnewMost();
-  // compareThingYouKnewLeast();
   knowledgeHeatmap();
 
+}
+
+function buildBarChart(songMatch,container){
+  let barScale = d3.scaleLinear().domain([0,d3.max(Object.values(songMatch.percents).map(function(d){return 1-d;}))]).range([0,100])
+
+  let row = container.select(".bar-chart").selectAll("div").data(["z","m","x","b"]).enter("div").append("div").attr("class","row")
+    .style("display",function(d){
+      if(isNaN(songMatch.percents[d])){
+        return "none"
+      }
+      return null;
+    });
+
+  row.append("p").attr("class","row-label").html(function(d){return genLabel[d]+"<span>Ages "+genLabelAge[d]+"</span>"});
+
+  let rowBar = row.append("div").attr("class","row-bar").style("width",function(d){
+      return barScale(1-songMatch.percents[d])+"%"
+    })
+    .style("background-color",function(d){
+      console.log(barScale(1-songMatch.percents[d]));
+      return backgroundScale(barScale(1-songMatch.percents[d])/100);
+    })
+
+  rowBar.append("p").attr("class","row-percent").html(function(d,i){
+    if(i==0){
+      return Math.round((1-songMatch.percents[d])*100)+"% <span>don&lsquo;t recognize</span>";
+    }
+    return Math.round((1-songMatch.percents[d])*100)+"%"
+  });
+}
+function buildOutList(song){
+
+  d3.select(".compare-year").text(song.year);
+  d3.selectAll(".delta").text(2020 - song.year);
+
+  d3.selectAll(".baseline-year").text(yearSelected - (2005 - +song.year));
+  let container = d3.select(".songs-that-are-old");
+
+  if(yearSelected - (2005 - song.year) < 1960){
+    d3.select(".songs-that-are-old-container").style("display","none")
+  }
+
+  let songList = container.selectAll("div").data(uniqueSongs.filter(function(d){
+      return d.year == (yearSelected - (2005 - song.year));
+    }).slice(0,10)).enter().append("div").attr("class","row");
+
+  songList.append("div")
+    .attr("class","quiz-end-section-item-play")
+    .html(function(d){
+      return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 40 60" enable-background="new 0 0 100 100" xml:space="preserve" style="height: 22px;width: 21px;"><g style="-ms-transform: translate(-30px,-7px); -webkit-transform: translate(-30px,-7px); transform: translate(-30px,-7px);width: 10px;"><polygon points="51.964,33.94 38.759,43.759 30.945,43.759 30.945,56.247 38.762,56.247 51.964,66.06  "></polygon><path d="M66.906,34.21l-3.661,2.719c2.517,3.828,3.889,8.34,3.889,13.071s-1.372,9.242-3.889,13.072l3.661,2.718   c3.098-4.604,4.786-10.069,4.786-15.79S70.004,38.821,66.906,34.21"></path><path d="M56.376,42.037h-0.317c1.378,2.441,2.126,5.18,2.126,7.963c0,2.79-0.748,5.528-2.126,7.97h0.321l2.516,1.864   c1.738-2.996,2.676-6.383,2.676-9.834s-0.939-6.839-2.676-9.841L56.376,42.037z"></path></g></svg>';
+    })
+    .on("click",function(d){
+      playPauseSong(d)
+    })
+  //
+  songList.append("p")
+    .attr("class","quiz-end-section-item-text")
+    .html(function(d){
+      return "<span class='bold'>"+d.title + "</span> by " + d.artist;
+    })
+  //
 
 
+}
+function compareThingYouKnewMost(){
+  let container = d3.select(".song-knew-compare");
+  let threshold = .3;
+  //get songs you just quizzed on
+  let songOutputFiltered  = songOutput.filter(function(d){
+    return +d.answer > 1;
+  })
 
+  let songsMatchingThreshold = [];
 
+  //get database percents
+  for (var song in songOutputFiltered){
+    if(dataForPostMap.has(songOutputFiltered[song].key)){
+      let percents = dataForPostMap.get(songOutputFiltered[song].key).percents;
+
+      let minValue = null;
+      let orderForCheck = order[genSelected];
+      for (var gen in orderForCheck){
+        if(percents[orderForCheck[gen]] < threshold && percents[genSelected] > percents[orderForCheck[gen]]){
+          minValue = [orderForCheck[gen],percents[orderForCheck[gen]]];
+          break;
+        }
+      }
+      if(minValue){
+        songOutputFiltered[song].minValue = minValue
+        songOutputFiltered[song].percents = percents
+        songsMatchingThreshold.push(songOutputFiltered[song])
+      }
+    }
+  }
+  //get minimum
+  if(songsMatchingThreshold.length > 0){
+    songsMatchingThreshold = songsMatchingThreshold.sort(function(a,b){
+      return +a.minValue[1] - b.minValue[1];
+    })
+    var songMatch = songsMatchingThreshold[0]
+    if(uniqueSongMap.has(songMatch.key)){
+      let songInfo = uniqueSongMap.get(songMatch.key);
+      //console.log(data[song].key);
+      //let songYear = songMap.get(data[song].key).value.year;
+      songMatch.title = songInfo.title;
+      songMatch.artist = songInfo.artist;
+      songMatch.year = songInfo.year;
+    }
+    container.select(".song-knew").html("<span class='bold'>"+songMatch.title+"</span>"+" by "+songMatch.artist);
+    container.select(".song-knew-percent").html(Math.round((1-songMatch.minValue[1])*100)+"%");
+    container.select(".song-knew-gen").html(genLabelPossessive[songMatch.minValue[0]]+" (ages "+genLabelAge[songMatch.minValue[0]]+")");
+    console.log(songMatch);
+    buildBarChart(songMatch,container)
+    buildOutList(songMatch)
+  }
+  else {
+    container.select(".chart-head").style("display","none");
+    let filteredData = dataForPost.filter(function(d){
+      if(d.percents["z"] > 0 && d.percents["z"] < .6 && d.percents["m"] > .5){
+        return d;
+      }
+    })
+    if(filteredData.length > 0){
+      let song = filteredData[0];
+      if(uniqueSongMap.has(song.key)){
+        let songInfo = uniqueSongMap.get(song.key);
+        //console.log(data[song].key);
+        //let songYear = songMap.get(data[song].key).value.year;
+        song.title = songInfo.title;
+        song.artist = songInfo.artist;
+        song.year = songInfo.year;
+      }
+      container.select(".chart-head-alt").style("display","block");
+      container.select(".chart-head-alt").select(".song-knew").html("<span class='bold'>"+song.title+"</span>"+" by "+song.artist+" ("+song.year+")");
+      console.log(song);
+
+      buildBarChart(song,container)
+      buildOutList(song)
+    }
+  }
 }
 
 export default { init, resize };
