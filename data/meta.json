@@ -1,12 +1,12 @@
 {
 	"title": "Identifying Generational Gaps in Music",
 	"description": "Do you recognize songs from history more than people your age?",
-	"site": "https://the-pudding.github.io/generational-knowledge/",
+	"site": "https://pudding.cool",
 	"siteName": "The Pudding",
-	"url": "https://the-pudding.github.io/generational-knowledge/",
+	"url": "https://pudding.cool/2020/04/music-challenge",
 	"keywords": "music",
-	"imgFacebook": "https://pudding.cool/year/month/name/assets/social/social-facebook.jpg",
-	"imgTwitter": "https://pudding.cool/year/month/name/assets/social/social-twitter.jpg",
+	"imgFacebook": "https://pudding.cool/2020/04/music-challenge/assets/social/social-facebook.jpg",
+	"imgTwitter": "https://pudding.cool/2020/04/music-challenge/assets/social/social-twitter.jpg",
 	"author": {
 		"name": "The Pudding",
 		"url": "https://pudding.cool/author/matt-daniels",

@@ -407,8 +407,8 @@ function init() {
   slideController();
   //
   var decadeSelector = d3.scaleQuantize().domain([0,1])
-    .range([6])
-    //.range([0,6,7,8,9])
+    //.range([6])
+    .range([0,6,7,8,9])
 
   songDecades = decadeSelector(Math.random());
   d3.selectAll(".song-decade").text(function(d){
