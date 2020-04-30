@@ -863,7 +863,7 @@ function postAnalysis(data){
   function knowledgeHeatmap(){
     let container = d3.select(".grid-chart");
 
-    let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 10;})).enter().append("div").attr("class","row");
+    let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 10;}).sort(function(a,b){return b.totalCount - a.totalCount})).enter().append("div").attr("class","row");
     row.append("p").attr("class","row-label").html(function(d){
       return d.title+"<br><span>"+artistClean(d.artist)+" "+d.year+"</span>";
     })
