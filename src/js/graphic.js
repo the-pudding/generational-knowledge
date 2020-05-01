@@ -801,7 +801,7 @@ function buildBarChart(songMatch,container){
 
   rowBar.append("p").attr("class","row-percent").html(function(d,i){
     if(i==0){
-      return Math.round((songMatch.percents[d])*100)+"% <span>don&lsquo;t recognize</span>";
+      return Math.round((songMatch.percents[d])*100)+"% <span>recognize it</span>";
     }
     return Math.round((songMatch.percents[d])*100)+"%"
   });
