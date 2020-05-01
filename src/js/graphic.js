@@ -9,7 +9,7 @@ let dataURL = 'https://pudding.cool/2020/04/song-memory/data.csv?version='+VERSI
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144"};
+let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144","7875":"7875"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
