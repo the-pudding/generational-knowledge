@@ -14,8 +14,12 @@
 function loadFile(file) {
   return new Promise((resolve, reject) => {
     const ext = file.split('.').pop().split("?")[0];
-    console.log(ext);
-    if (ext === 'csv')
+    if(file.includes("https")){
+      d3.csv(file)
+        .then(resolve)
+        .catch(reject);
+    }
+    else if (ext === 'csv')
       d3.csv(`assets/data/${file}`)
         .then(resolve)
         .catch(reject);
