@@ -242,9 +242,11 @@ function slideController(){
       }
     })
 
+    let songsRated = songOutput.map(function(d){return d.key});
+
     songs = uniqueSongs.filter(function(d){
       var id = d.key;
-      return d.year.slice(0,4).slice(2,3) == songDecades;
+      return d.year.slice(0,4).slice(2,3) == songDecades && songsRated.indexOf(id) == -1;
     });
 
     shuffle(songs);
@@ -261,8 +263,6 @@ function slideController(){
     songPlaying = song;
 
     let src = 'https://p.scdn.co/mp3-preview/'+url;
-
-    console.log(src);
 
     if(Object.keys(overrideAudio).indexOf(song.key) > -1){
       src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
@@ -354,7 +354,7 @@ function slideController(){
   });
 
   d3.selectAll(".redo-slide").selectAll(".grey-button").on("click",function(d){
-    mySwiper.slideTo(slideOffSet-1, slideChangeSpeed, true);
+    mySwiper.slideTo(slideOffSet-2, slideChangeSpeed, true);
   })
 }
 
