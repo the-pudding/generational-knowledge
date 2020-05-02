@@ -22,7 +22,7 @@ let startNew = true;
 let dbOutput = [];
 let songPlaying = null;
 let songBubbles = null;
-let slideOffSet = 4;
+let slideOffSet = 5;
 let songMap = null;
 let hasExistingData = false;
 let formatComma = d3.format(",");
@@ -42,7 +42,7 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
-let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","13986"],6:["17221","15973","17993"]};
+let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","13986"],6:["17221","15973","17993"],1:["10000339"]};
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -103,9 +103,6 @@ function playPauseSong(song){
   else {
     startNew = true;
   }
-  // if(songPlaying.key == song.key){
-  //   startNew = true;
-  // }
 }
 
 function shuffle(array) {
@@ -169,7 +166,7 @@ function changeSong(songNumber){
 function slideController(){
   d3.select(".start-slide").select(".red-button").on("click",function(d){
 
-    var song = songs[0];
+    var song = uniqueSongs[0];
     var url = song.song_url;
     songPlaying = song;
 
@@ -202,13 +199,14 @@ function slideController(){
   });
 
   d3.select(".decade-slide").select(".old-user").select(".old-top").selectAll(".grey-button").on("click",function(d){
-    mySwiper.slideTo(slideOffSet-1, slideChangeSpeed, true);
+    mySwiper.slideTo(slideOffSet-2, slideChangeSpeed, true);
   });
 
   d3.select(".decade-slide").select(".old-user").select(".old-bottom").selectAll(".grey-button").on("click",function(d){
 
     let decadeSelected = d3.select(this).text().slice(2,3);
 
+    hasExistingData = false;
     dbOutput = [];
     songOutput = [];
     db.clear();
@@ -229,6 +227,58 @@ function slideController(){
 
     mySwiper.slideNext(slideChangeSpeed, true);
   });
+
+  d3.select(".music-choose-slide").selectAll(".grey-button").on("click",function(d){
+
+    console.log(d3.select(this).text().slice(-3).slice(0,1));
+    songDecades = +d3.select(this).text().slice(-3).slice(0,1);
+
+    d3.selectAll(".song-decade").text(function(d){
+      if(songDecades > 1){
+        return "19"+songDecades+"0";
+      }
+      else {
+        return "20"+songDecades+"0";
+      }
+    })
+
+    songs = uniqueSongs.filter(function(d){
+      var id = d.key;
+      return d.year.slice(0,4).slice(2,3) == songDecades;
+    });
+
+    shuffle(songs);
+
+    if(!hasExistingData){
+      for (var song in decadeCustom[songDecades]){
+        let customSong = decadeCustom[songDecades][song];
+        songs.unshift(uniqueSongMap.get(customSong));
+      }
+    }
+
+    var song = songs[0];
+    var url = song.song_url;
+    songPlaying = song;
+
+    let src = 'https://p.scdn.co/mp3-preview/'+url;
+
+    console.log(src);
+
+    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
+      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    }
+    sound = new Howl({
+      src:[src],
+      format:['mpeg'],
+      autoUnlock:true,
+      volume: 0.5
+    });
+
+    sound.on("load",function(d){
+      console.log("loaded");
+      mySwiper.slideNext(slideChangeSpeed, true);
+    })
+  })
 
   d3.selectAll(".options").selectAll("div").on("click",function(d,i){
 
@@ -306,7 +356,6 @@ function slideController(){
   d3.selectAll(".redo-slide").selectAll(".grey-button").on("click",function(d){
     mySwiper.slideTo(slideOffSet-1, slideChangeSpeed, true);
   })
-
 }
 
 function init() {
@@ -406,19 +455,8 @@ function init() {
   });
   //
   slideController();
-  
-  var decadeSelector = d3.scaleQuantize().domain([0,1])
-    .range([0,1,6,7,8,9])
 
-  songDecades = decadeSelector(Math.random());
-  d3.selectAll(".song-decade").text(function(d){
-    if(songDecades > 1){
-      return "19"+songDecades+"0";
-    }
-    else {
-      return "20"+songDecades+"0";
-    }
-  })
+
 
   loadData([dataURL,'cleaned_data.csv']).then(result => {
 
@@ -432,20 +470,6 @@ function init() {
     });
 
     setupDB();
-
-    songs = result[1].filter(function(d){
-      var id = d.key;
-      return d.year.slice(0,4).slice(2,3) == songDecades;
-    });
-
-    shuffle(songs);
-
-    if(!hasExistingData){
-      for (var song in decadeCustom[songDecades]){
-        let customSong = decadeCustom[songDecades][song];
-        songs.unshift(uniqueSongMap.get(customSong));
-      }
-    }
 
     postAnalysis(result[0])
 
@@ -465,8 +489,6 @@ function setupDB() {
     d3.select(".new-user").style("display","none")
     d3.select(".old-user").style("display","flex")
     d3.selectAll(".old-bday").text(yearSelected);
-
-
 
     answers["answers"].forEach(function(d){
       dbOutput.push(d);
@@ -805,6 +827,7 @@ function buildBarChart(songMatch,container){
     return Math.round((songMatch.percents[d])*100)+"%"
   });
 }
+
 function buildOutList(song){
 
   d3.select(".compare-year").text(song.year);
@@ -839,6 +862,7 @@ function buildOutList(song){
 
 
 }
+
 function compareThingYouKnewMost(){
   let container = d3.select(".song-knew-compare");
   let threshold = .3;
