@@ -9,7 +9,7 @@ let dataURL = 'https://pudding.cool/2020/04/song-memory/data.csv?version='+VERSI
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144","7875":"7875","10437":"10437"};
+let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144","7875":"7875","10437":"10437","9155":"9155"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -43,7 +43,6 @@ let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsq
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
 let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","13986"],6:["17221","15973","17993"],1:["10000339"]};
-//let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["10437"],6:["21484"],1:["10000339"]};
 
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
@@ -82,7 +81,6 @@ function playPauseSong(song){
   else if(songPlaying.key != song.key || startNew){
     startNew = false;
     songPlaying = song;
-
 
     let src = 'https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'
     if(Object.keys(overrideAudio).indexOf(song.key) > -1){
@@ -128,6 +126,8 @@ function shuffle(array) {
 
 function changeSong(songNumber){
 
+  console.log(songNumber);
+
   if(sound){
     sound.stop();
   }
@@ -136,9 +136,12 @@ function changeSong(songNumber){
     sound = upcomingSound;
   }
 
+  console.log(songPlaying);
+
   sound.play();
   songPlaying = songs[songNumber];
 
+  console.log(songPlaying);
 
   songCount = songCount + 1;
   var song = songs[songCount];
@@ -253,8 +256,6 @@ function slideController(){
 
     shuffle(songs);
 
-    console.log(hasExistingData);
-
     if(!hasExistingData){
       for (var song in decadeCustom[songDecades]){
         let customSong = decadeCustom[songDecades][song];
@@ -263,6 +264,7 @@ function slideController(){
     }
 
     var song = songs[0];
+    songCount = 0;
     var url = song.song_url;
     songPlaying = song;
 
@@ -289,6 +291,8 @@ function slideController(){
 
   d3.selectAll(".options").selectAll("div").on("click",function(d,i){
 
+
+
     emojiDivs.text(d3.select(this).select(".emoji").text());
 
     emojiDivs
@@ -309,10 +313,11 @@ function slideController(){
       .style("opacity",1)
       ;
 
+    console.log(songPlaying.title+"added to dataset");
+
     songOutput.push({"song_url":songPlaying.song_url,"key":songPlaying.key,"artist":songPlaying.artist,"title":songPlaying.title,"text":d3.select(this).text(),"answer":i, "year":songPlaying.year});
 
     dbOutput.push({"key":songPlaying.key,"answer":i})
-    console.log(songOutput);
 
     if(d3.select(".swiper-slide-active").classed("last-song")){
 
@@ -824,7 +829,6 @@ function buildBarChart(songMatch,container){
       return barScale(songMatch.percents[d])+"%"
     })
     .style("background-color",function(d){
-      console.log(barScale(songMatch.percents[d]));
       return backgroundScale(barScale(songMatch.percents[d])/100);
     })
 
@@ -918,7 +922,6 @@ function compareThingYouKnewMost(){
     container.select(".song-knew").html("<span class='bold'>"+songMatch.title+"</span>"+" by "+songMatch.artist);
     container.select(".song-knew-percent").html(Math.round((songMatch.minValue[1])*100)+"%");
     container.select(".song-knew-gen").html(genLabelPossessive[songMatch.minValue[0]]+" (ages "+genLabelAge[songMatch.minValue[0]]+")");
-    console.log(songMatch);
     buildBarChart(songMatch,container)
     buildOutList(songMatch)
   }
@@ -941,7 +944,6 @@ function compareThingYouKnewMost(){
       }
       container.select(".chart-head-alt").style("display","block");
       container.select(".chart-head-alt").select(".song-knew").html("<span class='bold'>"+song.title+"</span>"+" by "+song.artist+" ("+song.year+")");
-      console.log(song);
 
       buildBarChart(song,container)
       buildOutList(song)
