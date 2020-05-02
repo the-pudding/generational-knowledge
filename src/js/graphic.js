@@ -69,11 +69,10 @@ function playPauseSong(song){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
-      volume: 1
+      volume: .5
     });
 
     sound.on("end",function(){
-      console.log("ending");
       startNew = true;
     });
     sound.play();
