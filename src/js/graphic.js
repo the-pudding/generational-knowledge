@@ -43,6 +43,8 @@ let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsq
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
 let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","13986"],6:["17221","15973","17993"],1:["10000339"]};
+//let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["10437"],6:["21484"],1:["10000339"]};
+
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
   .style("left",function(d,i){
@@ -69,7 +71,7 @@ function playPauseSong(song){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
-      volume: .5
+      volume: 0.5
     });
 
     sound.on("end",function(){
@@ -229,7 +231,8 @@ function slideController(){
 
   d3.select(".music-choose-slide").selectAll(".grey-button").on("click",function(d){
 
-    console.log(d3.select(this).text().slice(-3).slice(0,1));
+    upcomingSound = null;
+
     songDecades = +d3.select(this).text().slice(-3).slice(0,1);
 
     d3.selectAll(".song-decade").text(function(d){
@@ -250,6 +253,8 @@ function slideController(){
 
     shuffle(songs);
 
+    console.log(hasExistingData);
+
     if(!hasExistingData){
       for (var song in decadeCustom[songDecades]){
         let customSong = decadeCustom[songDecades][song];
@@ -266,12 +271,15 @@ function slideController(){
     if(Object.keys(overrideAudio).indexOf(song.key) > -1){
       src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
     }
+
     sound = new Howl({
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
       volume: 0.5
     });
+
+    console.log(songPlaying);
 
     sound.on("load",function(d){
       console.log("loaded");
@@ -304,7 +312,7 @@ function slideController(){
     songOutput.push({"song_url":songPlaying.song_url,"key":songPlaying.key,"artist":songPlaying.artist,"title":songPlaying.title,"text":d3.select(this).text(),"answer":i, "year":songPlaying.year});
 
     dbOutput.push({"key":songPlaying.key,"answer":i})
-
+    console.log(songOutput);
 
     if(d3.select(".swiper-slide-active").classed("last-song")){
 
@@ -336,6 +344,7 @@ function slideController(){
       updateOnCompletion();
       compareThingYouKnewMost();
       quizCompleted = true;
+      hasExistingData = true;
       db.update({"year":yearSelected,"answers":dbOutput});
     }
     else {
@@ -733,7 +742,7 @@ function postAnalysis(data){
   function knowledgeHeatmap(){
     let container = d3.select(".grid-chart");
 
-    let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 110;}).sort(function(a,b){return b.totalCount - a.totalCount})).enter().append("div").attr("class","row");
+    let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 200;}).sort(function(a,b){return b.totalCount - a.totalCount})).enter().append("div").attr("class","row");
     row.append("p").attr("class","row-label").html(function(d){
       return d.title+' <span>'+artistClean(d.artist)+' '+d.year+"</span><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' viewBox='0 19 40 40' enable-background='new 0 0 100 100' xml:space='preserve' style='height: 11px;width: 18px;'><g style='-ms-transform: translate(-30px,-7px); -webkit-transform: translate(-30px,-7px); transform: translate(-30px,-7px);width: 10px;'><polygon points='51.964,33.94 38.759,43.759 30.945,43.759 30.945,56.247 38.762,56.247 51.964,66.06  '></polygon><path d='M66.906,34.21l-3.661,2.719c2.517,3.828,3.889,8.34,3.889,13.071s-1.372,9.242-3.889,13.072l3.661,2.718   c3.098-4.604,4.786-10.069,4.786-15.79S70.004,38.821,66.906,34.21'></path><path d='M56.376,42.037h-0.317c1.378,2.441,2.126,5.18,2.126,7.963c0,2.79-0.748,5.528-2.126,7.97h0.321l2.516,1.864   c1.738-2.996,2.676-6.383,2.676-9.834s-0.939-6.839-2.676-9.841L56.376,42.037z'></path></g></svg>";
       })
