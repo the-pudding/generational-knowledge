@@ -42,7 +42,7 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
-let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","13986"],6:["17221","15973","17993"],1:["10000339"]};
+let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
 
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
@@ -367,6 +367,9 @@ function slideController(){
   });
 
   d3.selectAll(".redo-slide").selectAll(".grey-button").on("click",function(d){
+    if(sound){
+      sound.stop();
+    }
     mySwiper.slideTo(slideOffSet-2, slideChangeSpeed, true);
   })
 }
