@@ -858,7 +858,7 @@ function postAnalysis(data){
     knowledgeHeatmap(exceptGenZ,"Here are songs that did not get passed down to gen z, recognized by everyone except them.");
     knowledgeHeatmap(exceptMillenials,"Here are songs recognized by boomers and gen x, but not millennials.");
     knowledgeHeatmap(millenials,"Here are songs that are uniquely known by millennials, important cultural touchstones for the generation.");
-    knowledgeHeatmap(booms,"Here is the same thing for gen x, songs uniquely known by only the generation.");
+    knowledgeHeatmap(genx,"Here is the same thing for gen x, songs uniquely known by only the generation.");
     // knowledgeHeatmap(nineties,"nineies");
 
 
