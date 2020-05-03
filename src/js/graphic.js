@@ -9,7 +9,7 @@ let dataURL = 'https://pudding.cool/2020/04/song-memory/data.csv?version='+VERSI
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144","7875":"7875","10437":"10437","9155":"9155"};
+let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144","7875":"7875","10437":"10437","9155":"9155","5516":"5516","6712":"6712"};
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -637,19 +637,19 @@ function postAnalysis(data){
     let rawCount = +boomValue[1] + +genXValue[1] + +genZValue[1] + +milValue[1];
     let count = 0;
 
-    if(milPercent || milPercent == 0){
+    if(!isNaN(milPercent)){
       count = count + 1
     }
-    if(genZPercent || genZPercent == 0){
+    if(!isNaN(genZPercent)){
       count = count + 1;
     }
-    if(genXPercent || genXPercent == 0){
+    if(!isNaN(genXPercent)){
       count = count + 1;
     }
-    if(boomPercent || boomPercent == 0){
+    if(!isNaN(boomPercent)){
       count = count + 1;
     }
-    if(count > 1){
+    if(count > 3){
       data[song].percents = {"z":genZPercent,"m":milPercent,"x":genXPercent,"b":boomPercent};
       data[song]["totalCount"] = rawCount;
       dataForPost.push(data[song])
@@ -747,10 +747,14 @@ function postAnalysis(data){
     return artist.split(" featuring")[0].split(" Featuring")[0].replace(", The","");
   }
 
-  function knowledgeHeatmap(){
-    let container = d3.select(".grid-chart");
+  function knowledgeHeatmap(data,text){
 
-    let row = container.selectAll("div").data(dataForPost.filter(function(d){return d.totalCount > 200;}).sort(function(a,b){return b.totalCount - a.totalCount})).enter().append("div").attr("class","row");
+    d3.select(".grid-chart-container").append("p").attr("class",null).html(text)
+    d3.select(".grid-chart-container").append("p").attr("class","chart-head med-text").html('Percent of people who <span class="color-recognize">recognize</span> a song, by generation.')
+
+    let container = d3.select(".grid-chart-container").append("div").attr("class","grid-chart");
+
+    let row = container.selectAll("div").data(data).enter().append("div").attr("class","row");
     row.append("p").attr("class","row-label").html(function(d){
       return d.title+' <span>'+artistClean(d.artist)+' '+d.year+"</span><svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' viewBox='0 19 40 40' enable-background='new 0 0 100 100' xml:space='preserve' style='height: 11px;width: 18px;'><g style='-ms-transform: translate(-30px,-7px); -webkit-transform: translate(-30px,-7px); transform: translate(-30px,-7px);width: 10px;'><polygon points='51.964,33.94 38.759,43.759 30.945,43.759 30.945,56.247 38.762,56.247 51.964,66.06  '></polygon><path d='M66.906,34.21l-3.661,2.719c2.517,3.828,3.889,8.34,3.889,13.071s-1.372,9.242-3.889,13.072l3.661,2.718   c3.098-4.604,4.786-10.069,4.786-15.79S70.004,38.821,66.906,34.21'></path><path d='M56.376,42.037h-0.317c1.378,2.441,2.126,5.18,2.126,7.963c0,2.79-0.748,5.528-2.126,7.97h0.321l2.516,1.864   c1.738-2.996,2.676-6.383,2.676-9.834s-0.939-6.839-2.676-9.841L56.376,42.037z'></path></g></svg>";
       })
@@ -811,7 +815,60 @@ function postAnalysis(data){
     })
   }
 
-  knowledgeHeatmap();
+  function findTrends(){
+    let universallyRecognized = dataForPost.filter(function(d){
+      return d.totalCount > 150 && d3.min(Object.values(d.percents)) > .9;
+    });
+
+    let exceptGenZ = dataForPost.filter(function(d){
+      let otherMax = d3.min([d.percents.x,d.percents.m]);
+      return d.totalCount > 150 && otherMax > .5 && d.percents.z < .2;
+    });
+
+    let exceptMillenials = dataForPost.filter(function(d){
+      let otherMax = d3.min([d.percents.x,d.percents.b]);
+      return d.totalCount > 150 && otherMax > .5 && d.percents.m < .2;
+    });
+
+    let millenials = dataForPost.filter(function(d){
+      let otherMax = d3.max([d.percents.x,d.percents.b,d.percents.z]);
+      return d.totalCount > 150 && otherMax < .3 && d.percents.m > otherMax*2 && d.percents.m > .4;
+    });
+
+    let genx = dataForPost.filter(function(d){
+      let otherMax = d3.max([d.percents.m,d.percents.b,d.percents.z]);
+      return d.totalCount > 150 && otherMax < .3 && d.percents.x > otherMax*2 && d.percents.x > .4;
+    });
+
+    let booms = dataForPost.filter(function(d){
+      let otherMax = d3.max([d.percents.m,d.percents.x,d.percents.z]);
+      return d.totalCount > 150 && otherMax < .3 && d.percents.b > otherMax*2 && d.percents.b > .4;
+    });
+
+    let nineties = dataForPost.filter(function(d){
+      return d.totalCount > 150 && d.year.slice(2,3) == "9" && d3.max(Object.values(d.percents)) < .2;
+    });
+
+    let eighties = dataForPost.filter(function(d){
+      return d.totalCount > 150 && d.year.slice(2,3) == "8" && d3.max(Object.values(d.percents)) < .2;
+    });
+
+
+    knowledgeHeatmap(universallyRecognized,"First, here is what is universally known, making for a great cross-generational wedding playlist.");
+    knowledgeHeatmap(exceptGenZ,"Here are songs that did not get passed down to gen z, recognized by everyone except them.");
+    knowledgeHeatmap(exceptMillenials,"Here are songs recognized by boomers and gen x, but not millennials.");
+    knowledgeHeatmap(millenials,"Here are songs that are uniquely known by millennials, important cultural touchstones for the generation.");
+    knowledgeHeatmap(booms,"Here is the same thing for gen x, songs uniquely known by only the generation.");
+    // knowledgeHeatmap(nineties,"nineies");
+
+
+
+      //.sort(function(a,b){return b.totalCount - a.totalCount});
+
+
+
+  }
+  findTrends();
 
 }
 
