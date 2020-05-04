@@ -9,7 +9,7 @@ let dataURL = 'https://pudding.cool/2020/04/song-memory/data.csv?version='+VERSI
 let songs;
 
 var sound = null;
-let overrideAudio = {"12407":"12407","3077":"3077","3435":"3435","17218":"17218","2460":"2460","15866":"15866","15207":"15207","12976":"12976","11882":"11882","5144":"5144","7875":"7875","10437":"10437","9155":"9155","5516":"5516","6712":"6712","10441":"10441","6658":"6658"};
+let overrideAudio = ["20163","12407","3077","3435","17218","2460","15866","15207","12976","11882","5144","7875","10437","9155","5516","6712","10441","6658"];
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -42,7 +42,8 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 
-let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
+//let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
+let decadeCustom = {9:["3079"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
 
 
 const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
@@ -63,8 +64,8 @@ function playPauseSong(song){
     songPlaying = song;
 
     let src = 'https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'
-    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
-      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    if(overrideAudio.indexOf(song.key) > -1){
+      src = 'assets/audio/'+song.key+'.mp3';
     }
     sound = new Howl({
       src:[src],
@@ -83,8 +84,8 @@ function playPauseSong(song){
     songPlaying = song;
 
     let src = 'https://p.scdn.co/mp3-preview/'+song.song_url+'?cid=774b29d4f13844c495f206cafdad9c86'
-    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
-      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    if(overrideAudio.indexOf(song.key) > -1){
+      src = 'assets/audio/'+overrideAudio+'.mp3';
     }
     sound = new Howl({
       src:[src],
@@ -148,8 +149,8 @@ function changeSong(songNumber){
   var url = song.song_url;
 
   let src = 'https://p.scdn.co/mp3-preview/'+url+'?cid=774b29d4f13844c495f206cafdad9c86'
-  if(Object.keys(overrideAudio).indexOf(song.key) > -1){
-    src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+  if(overrideAudio.indexOf(song.key) > -1){
+    src = 'assets/audio/'+overrideAudio+'.mp3';
   }
   upcomingSound = new Howl({
     src:[src],
@@ -175,8 +176,8 @@ function slideController(){
     songPlaying = song;
 
     let src = 'https://p.scdn.co/mp3-preview/'+url;
-    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
-      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
+    if(overrideAudio.indexOf(song.key) > -1){
+      src = 'assets/audio/'+overrideAudio+'.mp3';
     }
     sound = new Howl({
       src:[src],
@@ -228,70 +229,20 @@ function slideController(){
 
   d3.select(".year-slide").selectAll(".grey-button").on("click",function(d){
     yearSelected = d3.select(this).text();
-
-    mySwiper.slideNext(slideChangeSpeed, true);
+    if(hasExistingData){
+      mySwiper.slideTo(slideOffSet-2,slideChangeSpeed, true);
+    }
+    else{
+      var decadeSelector = d3.scaleQuantize().domain([0,1]).range([0,6,7,8,9]);
+      getData(decadeSelector(Math.random()));
+    }
   });
 
   d3.select(".music-choose-slide").selectAll(".grey-button").on("click",function(d){
-
-    upcomingSound = null;
-
-    songDecades = +d3.select(this).text().slice(-3).slice(0,1);
-
-    d3.selectAll(".song-decade").text(function(d){
-      if(songDecades > 1){
-        return "19"+songDecades+"0";
-      }
-      else {
-        return "20"+songDecades+"0";
-      }
-    })
-
-    let songsRated = songOutput.map(function(d){return d.key});
-
-    songs = uniqueSongs.filter(function(d){
-      var id = d.key;
-      return d.year.slice(0,4).slice(2,3) == songDecades && songsRated.indexOf(id) == -1;
-    });
-
-    shuffle(songs);
-
-    if(!hasExistingData){
-      for (var song in decadeCustom[songDecades]){
-        let customSong = decadeCustom[songDecades][song];
-        songs.unshift(uniqueSongMap.get(customSong));
-      }
-    }
-
-    var song = songs[0];
-    songCount = 0;
-    var url = song.song_url;
-    songPlaying = song;
-
-    let src = 'https://p.scdn.co/mp3-preview/'+url;
-
-    if(Object.keys(overrideAudio).indexOf(song.key) > -1){
-      src = 'assets/audio/'+overrideAudio[song.key]+'.mp3';
-    }
-
-    sound = new Howl({
-      src:[src],
-      format:['mpeg'],
-      autoUnlock:true,
-      volume: 0.5
-    });
-
-    console.log(songPlaying);
-
-    sound.on("load",function(d){
-      console.log("loaded");
-      mySwiper.slideNext(slideChangeSpeed, true);
-    })
+    getData(+d3.select(this).text().slice(-3).slice(0,1));
   })
 
   d3.selectAll(".options").selectAll("div").on("click",function(d,i){
-
-
 
     emojiDivs.text(d3.select(this).select(".emoji").text());
 
@@ -371,6 +322,65 @@ function slideController(){
       sound.stop();
     }
     mySwiper.slideTo(slideOffSet-2, slideChangeSpeed, true);
+  })
+}
+
+function getData(songDecades){
+
+  upcomingSound = null;
+
+  d3.selectAll(".song-decade").text(function(d){
+    if(songDecades > 1){
+      return "19"+songDecades+"0";
+    }
+    else {
+      return "20"+songDecades+"0";
+    }
+  })
+
+  let songsRated = songOutput.map(function(d){return d.key});
+
+  songs = uniqueSongs.filter(function(d){
+    var id = d.key;
+    return d.year.slice(0,4).slice(2,3) == songDecades && songsRated.indexOf(id) == -1;
+  });
+
+  shuffle(songs);
+
+  if(!hasExistingData){
+    for (var song in decadeCustom[songDecades]){
+      let customSong = decadeCustom[songDecades][song];
+      songs.unshift(uniqueSongMap.get(customSong));
+    }
+  }
+
+  var song = songs[0];
+  songCount = 0;
+  var url = song.song_url;
+  songPlaying = song;
+
+  let src = 'https://p.scdn.co/mp3-preview/'+url;
+
+  if(overrideAudio.indexOf(song.key) > -1){
+    src = 'assets/audio/'+overrideAudio+'.mp3';
+  }
+
+  sound = new Howl({
+    src:[src],
+    format:['mpeg'],
+    autoUnlock:true,
+    volume: 0.5
+  });
+
+  sound.on("load",function(d){
+    console.log("loaded");
+
+    if(hasExistingData){
+      mySwiper.slideNext(slideChangeSpeed, true);
+    }
+    else{
+      mySwiper.slideTo(slideOffSet-1,slideChangeSpeed, true);
+    }
   })
 }
 
@@ -472,8 +482,6 @@ function init() {
   //
   slideController();
 
-
-
   loadData([dataURL,'cleaned_data.csv']).then(result => {
 
     let container = d3.select(".start-slide");
@@ -488,6 +496,10 @@ function init() {
     setupDB();
 
     postAnalysis(result[0])
+
+    if(hasExistingData){
+      d3.select(".new-user-big-text").style("display","none")
+    }
 
 	}).catch(console.error);
 
@@ -853,13 +865,19 @@ function postAnalysis(data){
       return d.totalCount > 150 && d.year.slice(2,3) == "8" && d3.max(Object.values(d.percents)) < .2;
     });
 
+    // let thing = dataForPost.filter(function(d){
+    //   return d.year < 1965 && d3.min(Object.values(d.percents)) > .8;
+    // });
 
-    knowledgeHeatmap(universallyRecognized,"First, here is what is universally known, making for a great cross-generational wedding playlist.");
-    knowledgeHeatmap(exceptGenZ,"Here are songs that did not get passed down to gen z, recognized by everyone except them.");
+
+    knowledgeHeatmap(exceptGenZ,"First, here are songs that did not get passed down to gen z, recognized by everyone except them.");
     knowledgeHeatmap(exceptMillenials,"Here are songs recognized by boomers and gen x, but not millennials.");
+    knowledgeHeatmap(universallyRecognized,"Here is what is universally known, making for a great cross-generational wedding playlist.");
     knowledgeHeatmap(millenials,"Here are songs that are uniquely known by millennials, important cultural touchstones for the generation.");
     knowledgeHeatmap(genx,"Here is the same thing for gen x, songs uniquely known by only the generation.");
     // knowledgeHeatmap(nineties,"nineies");
+    // knowledgeHeatmap(thing,"Here is the same thing for gen x, songs uniquely known by only the generation.");
+
 
 
 
@@ -874,6 +892,8 @@ function postAnalysis(data){
 
 function buildBarChart(songMatch,container){
   let barScale = d3.scaleLinear().domain([0,d3.max(Object.values(songMatch.percents).map(function(d){return d;}))]).range([0,100])
+
+  container.select(".bar-chart").selectAll("div").remove();
 
   let row = container.select(".bar-chart").selectAll("div").data(["z","m","x","b"]).enter("div").append("div").attr("class","row")
     .style("display",function(d){
@@ -979,6 +999,7 @@ function compareThingYouKnewMost(){
       songMatch.artist = songInfo.artist;
       songMatch.year = songInfo.year;
     }
+
     container.select(".song-knew").html("<span class='bold'>"+songMatch.title+"</span>"+" by "+songMatch.artist);
     container.select(".song-knew-percent").html(Math.round((songMatch.minValue[1])*100)+"%");
     container.select(".song-knew-gen").html(genLabelPossessive[songMatch.minValue[0]]+" (ages "+genLabelAge[songMatch.minValue[0]]+")");
