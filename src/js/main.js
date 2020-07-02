@@ -3,6 +3,7 @@ import debounce from "lodash.debounce";
 import isMobile from "./utils/is-mobile";
 import linkFix from "./utils/link-fix";
 import graphic from "./graphic";
+import header from "./header";
 import footer from "./footer";
 
 const $body = d3.select("body");
@@ -21,6 +22,8 @@ function resize() {
 function init() {
   // adds rel="noopener" to all target="_blank" links
   linkFix();
+  header.init();
+
   // add mobile class to body tag
   $body.classed("is-mobile", isMobile.any());
   // setup resize event

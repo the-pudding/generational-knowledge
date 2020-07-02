@@ -1,5 +1,9 @@
 <div class="quiz-wrapper">
+	{{> story/header }}
 	<div class="emoji-container">
+	</div>
+	<div class="byline">
+		<p>By <a href="/author/matt-daniels/">Matt Daniels</a></p>
 	</div>
 	<div class="quiz">
 		<div class="song">
@@ -7,10 +11,7 @@
 		<div class="swiper-container">
 			<div class="swiper-wrapper">
 				<div class="swiper-slide start-slide">
-					<div class="byline">
-						<p>By <a href="/author/matt-daniels/">Matt Daniels</a></p>
-					</div>
-					<p class="big-text">This is a music challenge, testing how well you recognize historic hits.</p>
+					<p class="big-text">This is an experiment to identify generational gaps in music.</p>
 					<p class="med-text">First, turn your audio on.</p>
 					<div class="grey-button">Loading...
 					</div>
@@ -24,9 +25,13 @@
 						</svg>
 					</button>
 				</div>
+				<div class="swiper-slide start-slide-2">
+					<p class="big-text">We’ve rebuilt TikTok meme where teens test their knowledge of &rsquo;90s music.</p>
+					<div class="grey-button">Got it.
+					</div>
+				</div>
 				<div class="swiper-slide decade-slide">
 					<div class="new-user">
-						<p class="med-text mid-text">This is a test of how well you know popular songs from history.</p>
 						<p class="big-text">Let’s get your birth year.</p>
 						<p class="med-text">I was born in the...</p>
 						<div class="decades">
@@ -122,7 +127,7 @@
 					</div>
 				</div>
 				<div class="swiper-slide loading-slide">
-					<p class="big-text">We’ll test your  music knowledge from the <span class="bold"><span class="song-decade">1990</span>s</span></p>
+					<p class="big-text">Playing hits from the <span class="bold"><span class="song-decade">1990</span>s</span></p>
 					<div class="loading">
 					</div>
 				</div>
@@ -214,11 +219,36 @@
 				</div>
 			</div>
 		</div>
-		<div class="pudding-logo">
-			<p>A project by the fine folks at</p>
-			<a href='https://pudding.cool' target='_blank' class='logo'>
-				<img inline src='pudding/wordmark.svg'>
-			</a>
+	</div>
+	<div class="people">
+		<div class="gen">
+			<p class="cat-text">Know</p>
+			<p class="gen-score"></p>
+			<p class="gen-text">Boomers</p>
+			<div class="gen-image">
+			</div>
 		</div>
+		<div class="gen">
+			<p class="gen-score"></p>
+			<p class="gen-text">Gen X</p>
+			<div class="gen-image">
+			</div>
+		</div>
+		<div class="gen">
+			<p class="gen-score"></p>
+			<p class="gen-text">Millennials</p>
+			<div class="gen-image">
+			</div>
+		</div>
+		<div class="gen">
+			<p class="cat-text">Don&rsquo;t<br>know</p>
+			<p class="gen-score"></p>
+			<p class="gen-text">Gen Z</p>
+			<div class="gen-image">
+			</div>
+		</div>
+		<div class="divider-line">
+		</div>
+		<p class="title">% of People Who Know this Song</p>
 	</div>
 </div>

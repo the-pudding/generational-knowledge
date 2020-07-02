@@ -9,7 +9,7 @@ let dataURL = 'https://pudding.cool/2020/04/song-memory/data.csv?version='+VERSI
 let songs;
 
 var sound = null;
-let overrideAudio = ["20163","12407","3077","3435","17218","2460","15866","15207","12976","11882","5144","7875","10437","9155","5516","6712","10441","6658"];
+let overrideAudio = ["20163","12407","3077","3435","17218","2460","15866","15207","12976","11882","5144","7875","10437","9155","5516","6712","10441","6658","9147"];
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -22,7 +22,7 @@ let startNew = true;
 let dbOutput = [];
 let songPlaying = null;
 let songBubbles = null;
-let slideOffSet = 5;
+let slideOffSet = 6;
 let songMap = null;
 let hasExistingData = false;
 let formatComma = d3.format(",");
@@ -41,18 +41,18 @@ let answersKey = {0:{"emoji":"🤷","text":"don&lsquo;t know it","color":"#FDDFC
 let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
-
-let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["8705","7856"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
+let people = d3.select(".people").selectAll(".gen");
+let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["7856","9147"],7:["14583","10916","14584","11845"],6:["17218","17221"],1:["10000339"]};
 //let decadeCustom = {9:["3077"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
 
 
-const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
-  .style("left",function(d,i){
-    return Math.random()*100+"%";
-  })
-  .style("font-size",function(d,i){
-    return fontSizeScale(Math.random())+"px";
-  });
+// const emojiDivs = d3.select(".emoji-container").selectAll("div").data(d3.range(50)).enter().append("div")
+//   .style("left",function(d,i){
+//     return Math.random()*100+"%";
+//   })
+//   .style("font-size",function(d,i){
+//     return fontSizeScale(Math.random())+"px";
+//   });
 
 function resize() {}
 
@@ -142,6 +142,23 @@ function changeSong(songNumber){
   sound.play();
   songPlaying = songs[songNumber];
 
+  let order = ["b","x","m","z"];
+
+  let scale = d3.scaleQuantize().domain([0,1]).range([1,2,3,4,5,6]);
+
+  people.style("display",null).each(function(d,i){
+    let gen = order[i];
+    let percent = dataForPostMap.get(songPlaying.key).percents[gen];
+    d3.select(this).select(".gen-score").text(Math.round(percent*100)+"%");
+
+    console.log(scale(Math.random()));
+
+    d3.select(this).select(".gen-image").style("background-image",function(){
+      return "url('assets/images/"+gen+"/"+scale(Math.random())+".png')"
+    });
+  });
+
+
   console.log(songPlaying);
 
   songCount = songCount + 1;
@@ -171,11 +188,15 @@ function changeSong(songNumber){
 function slideController(){
   d3.select(".start-slide").select(".red-button").on("click",function(d){
 
+    d3.select(".memory-header").style("display","none")
+
     var song = uniqueSongs[0];
     var url = song.song_url;
     songPlaying = song;
 
     let src = 'https://p.scdn.co/mp3-preview/'+url;
+    src = 'https://p.scdn.co/mp3-preview/02ee79550a6b38fc7e9f7df1e521ae639b1e2c23';
+
     if(overrideAudio.indexOf(song.key) > -1){
       src = 'assets/audio/'+song.key+'.mp3';
     }
@@ -183,15 +204,49 @@ function slideController(){
       src:[src],
       format:['mpeg'],
       autoUnlock:true,
-      volume: 0.5
+      volume: 0
     });
 
+    sound.on("load",function(d){
+      sound.fade(0,.5,2000);
+      sound.play();
+      mySwiper.slideNext();
+    })
+
+  });
+
+  d3.select(".start-slide-2").select(".grey-button").on("click",function(d){
     mySwiper.slideNext();
   });
 
   d3.select(".decade-slide").select(".new-user").selectAll(".grey-button").on("click",function(d){
 
     let decadeSelected = d3.select(this).text().slice(2,3);
+
+    if(decadeSelected < 8){
+      people.style("display",function(d,i){
+        if(i > 1){
+          return "none"
+        }
+        return null;
+      })
+    }
+    else if(decadeSelected == 8){
+      people.style("display",function(d,i){
+        if(i == 0 || i == 3){
+          return "none"
+        }
+        return null;
+      })
+    }
+    else if(decadeSelected > 8){
+      people.style("display",function(d,i){
+        if(i < 2){
+          return "none"
+        }
+        return null;
+      })
+    }
 
     d3.select(".year-slide").selectAll(".grey-button").each(function(d,i){
       var prefix = "19"+decadeSelected;
@@ -229,6 +284,40 @@ function slideController(){
 
   d3.select(".year-slide").selectAll(".grey-button").on("click",function(d){
     yearSelected = d3.select(this).text();
+
+    if(yearSelected > 1980 && yearSelected < 1997){
+      people.style("display",function(d,i){
+        if(i == 2){
+          return null
+        }
+        return "none";
+      })
+    }
+    else if(yearSelected > 1996){
+      people.style("display",function(d,i){
+        if(i == 3){
+          return null
+        }
+        return "none";
+      })
+    }
+    else if(yearSelected < 1966){
+      people.style("display",function(d,i){
+        if(i == 0){
+          return null
+        }
+        return "none";
+      })
+    }
+    else if(yearSelected > 1965 && yearSelected < 1981){
+      people.style("display",function(d,i){
+        if(i == 1){
+          return null
+        }
+        return "none";
+      })
+    }
+
     if(hasExistingData){
       mySwiper.slideTo(slideOffSet-2,slideChangeSpeed, true);
     }
@@ -244,25 +333,25 @@ function slideController(){
 
   d3.selectAll(".options").selectAll("div").on("click",function(d,i){
 
-    emojiDivs.text(d3.select(this).select(".emoji").text());
-
-    emojiDivs
-      .transition()
-      .duration(function(d){
-        return durationScale(Math.random());
-      })
-      .ease(d3.easeLinear)
-      .style("transform",function(d,i){
-        return "translate(-33px,-500px)";
-      })
-      .style("opacity",0)
-      .transition()
-      .duration(0)
-      .style("transform",function(d,i){
-        return "translate(-33px,0px)";
-      })
-      .style("opacity",1)
-      ;
+    // emojiDivs.text(d3.select(this).select(".emoji").text());
+    //
+    // emojiDivs
+    //   .transition()
+    //   .duration(function(d){
+    //     return durationScale(Math.random());
+    //   })
+    //   .ease(d3.easeLinear)
+    //   .style("transform",function(d,i){
+    //     return "translate(-33px,-500px)";
+    //   })
+    //   .style("opacity",0)
+    //   .transition()
+    //   .duration(0)
+    //   .style("transform",function(d,i){
+    //     return "translate(-33px,0px)";
+    //   })
+    //   .style("opacity",1)
+    //   ;
 
     console.log(songPlaying.title+"added to dataset");
 
@@ -321,6 +410,8 @@ function slideController(){
     if(sound){
       sound.stop();
     }
+    d3.select(".people").classed("quizzing",false);
+    people.style("display","none");
     mySwiper.slideTo(slideOffSet-2, slideChangeSpeed, true);
   })
 }
@@ -398,6 +489,8 @@ function init() {
   mySwiper.on('slideChange', function () {
     if(mySwiper.activeIndex == slideOffSet){
       d3.select(".song").style("opacity",1);
+      people.style("display",null);
+      d3.select(".people").classed("quizzing",true);
     }
 
     else if(mySwiper.activeIndex == slideOffSet+d3.selectAll(".song-quiz").size()){
@@ -435,8 +528,11 @@ function init() {
         mySwiper.slideNext(slideChangeSpeed, true);
       },3000)
     }
+
     else if(d3.select(".swiper-slide-active").classed("song-quiz")){
       changeSong(songCount);
+
+
 
       function transition(path) {
         path.transition()
@@ -477,6 +573,14 @@ function init() {
         }
       })
     }
+    else if(d3.select(".swiper-slide-active").classed("start-slide-2")){
+      d3.select(".people").classed("explainer",true);
+      d3.select(".byline").style("display","none");
+    }
+    else if(d3.select(".swiper-slide-active").classed("decade-slide")){
+      d3.select(".people").classed("explainer",false)
+      sound.stop();
+    }
 
   });
   //
@@ -496,6 +600,8 @@ function init() {
     setupDB();
 
     postAnalysis(result[0])
+
+
 
     if(hasExistingData){
       d3.select(".new-user-big-text").style("display","none")
