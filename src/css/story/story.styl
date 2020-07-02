@@ -110,13 +110,24 @@
   min-height 180px
   .title
     display block
-    top -30px
+    top -40px
     font-size 18px
-  @media screen and (max-width: 500px), screen and (max-height: 700px)
+  .gen
+    animation none
+    .gen-text
+      font-size 14px
+    .gen-score
+      font-size 18px
+      line-height 1
+  @media screen and (max-width: 600px), screen and (max-height: 750px)
     height 140px
     min-height auto
     .title
-      top -25px
+      top -40px
+      font-size 16px
+    .gen-text
+      font-size 14px
+    .gen-score
       font-size 16px
   @media (max-width: 374px)
     position absolute
@@ -126,18 +137,18 @@
     margin 0 auto
     transform scale(.9)
     transform-origin 50% 100%
-
-  .gen
-    .gen-text
-      font-size 14px
-    .gen-score
-      font-size 18px
     .gen-image
       height 90px
 
-    @media screen and (max-width: 600px), screen and (max-height: 750px)
-      .gen-text, .gen-score
-        font-size 14px
+  @media (max-width: 350px)
+    transform scale(.8)
+    .gen-image
+      height 70px
+
+
+
+
+
 
 
 
@@ -164,7 +175,6 @@
     @media (max-width: 325px)
       font-size 18px
       padding .5rem
-      padding-left 4rem
 
 
 html, body
@@ -902,9 +912,10 @@ footer
       cursor pointer
       max-width 240px
       font-weight 400
-      @media (max-width: 325px)
-        padding .8rem
-      span
+      display flex
+      flex-direction column
+      justify-content center
+      .emoji
         font-size: 26px;
         top: 6px;
         display: inline-block;
@@ -914,7 +925,7 @@ footer
       &:first-of-type
         background #FDDFCC
         position relative
-        span
+        .emoji
           font-size 36px
       &:nth-of-type(2)
         background #FFCCD2
@@ -925,29 +936,27 @@ footer
 
     @media screen and (max-width: 600px), screen and (max-height: 750px)
       margin 0 auto
-      margin-top 250px
+      margin-top 230px
+      margin-bottom 100px
       display flex
-      flex-wrap wrap
-      justify-content space-between
       max-width 400px
       width 95%
+      flex-direction column
+      height 100%
       div
-        width calc(50% - 5px)
+        width 100%
         max-width none
         font-size 15px
         max-width 200px
-        margin 0
+        margin 0 auto
         margin-bottom 5px
-        span
-          display inline-block
-          width 100%
-          line-height 0
-          margin-bottom 20px
+        height 1px
+        max-height 50px
+        padding 0
+        flex-grow 1
         &:first-of-type
-          span
+          .emoji
             font-size 24px
-
-
     @media (max-width: 450px)
       &:before
         font-size 24px
@@ -955,7 +964,8 @@ footer
 
 
     @media (max-width: 325px)
-      margin-top 200px
+      margin-top 183px
+      margin-bottom 150px
 
 .year-slide, .start-slide-2
   @media (max-width: 450px)
@@ -967,7 +977,14 @@ footer
   justify-content center
   @media (max-width: 550px)
     padding-top 100px
-    justify-content flex-start
+    justify-content center
+
+.start-slide-2
+  display flex
+  flex-direction column
+  justify-content center
+  @media (max-width: 550px)
+    justify-content center
 
 
 

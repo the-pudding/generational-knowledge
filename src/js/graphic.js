@@ -145,11 +145,13 @@ function changeSong(songNumber){
   let order = ["b","x","m","z"];
 
   let scale = d3.scaleQuantize().domain([0,1]).range([1,2,3,4,5,6]);
-
+  let colorScale = d3.scaleLinear().domain([.1,.9]).range(["red","blue"]);
   people.style("display",null).each(function(d,i){
     let gen = order[i];
     let percent = dataForPostMap.get(songPlaying.key).percents[gen];
-    d3.select(this).select(".gen-score").text(Math.round(percent*100)+"%");
+    d3.select(this).select(".gen-score").style("color",function(d,i){
+      return colorScale(percent);
+    }).text(Math.round(percent*100)+"%");
 
     console.log(scale(Math.random()));
 
@@ -394,7 +396,7 @@ function slideController(){
     }
     else {
       let colorToAdd = window.getComputedStyle(d3.select(this).node(), null).getPropertyValue("background-color");
-      let textToAdd = d3.select(this).select("span").text();
+      let textToAdd = d3.select(this).select(".emoji").text();
 
       songBubbles.each(function(d,i){
         if(i == (mySwiper.activeIndex - slideOffSet )){
