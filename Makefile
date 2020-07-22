@@ -24,6 +24,6 @@ aws-htmljs:
 	aws s3 cp dist/main.js s3://pudding.cool/2020/04/music-challenge/main.js
 
 aws-cache:
-	aws cloudfront create-invalidation --distribution-id E13X38CRR4E04D --paths '2020/04/music-challenge*'
+	aws cloudfront create-invalidation --distribution-id E13X38CRR4E04D --paths '/2020/04/music-challenge*'
 
 pudding: aws-assets aws-htmljs aws-cache archive
