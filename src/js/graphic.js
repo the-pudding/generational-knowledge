@@ -9,7 +9,7 @@ let dataURL = 'https://pudding.cool/2020/04/song-memory/data.csv?version='+VERSI
 let songs;
 
 var sound = null;
-let overrideAudio = ["5890","20163","12407","3077","3435","17218","2460","15866","12945","16560","15207","12976","11882","5144","7875","10437","9155","5516","6712","10441","6658","9147"];
+let overrideAudio = ["5890","20163","12407","3077","3435","17218","2460","15866","12945","16560","15207","12976","11882","5144","7875","10437","9155","5516","6712","10441","6658","9147","2020999992","2020999991"];
 let upcomingSound = null;
 let uniqueSongMap = null;
 let uniqueSongs = null;
@@ -42,7 +42,7 @@ let genLabel = {"m":"Millennials","z":"Gen Z","x":"Gen X","b":"Boomers"};
 let genLabelPossessive = {"m":"millennials","z":"Gen Z&rsquo;ers","x":"Gen X&rsquo;ers","b":"boomers"};
 let genLabelAge = {"m":"23&ndash;38","z":"13&ndash;22","x":"39&ndash;54","b":"55&ndash;73"};
 let people = d3.select(".people").selectAll(".gen");
-let decadeCustom = {9:["4448","4442","5893"],0:["2463","1844","1231"],8:["7856","9147"],7:["14583","10916","14584","11845"],6:["17218","16560"],1:["10000339"]};
+let decadeCustom = {9:["4448","4442","5893","2020999991"],0:["2463","1844","1231"],8:["7856","9147"],7:["14583","10916","14584","11845"],6:["17218","16560"],1:["10000339"]};
 //let decadeCustom = {9:["3077"],0:["2463","1844","1231"],8:["8705","7856","8683"],7:["14583","10916","14584","11845"],6:["17221","15973","17993"],1:["10000339"]};
 
 
@@ -149,16 +149,21 @@ function changeSong(songNumber){
   let transformScale = d3.scaleLinear().domain([.1,.9]).range([10,0]);
   people.style("display",null).each(function(d,i){
     let gen = order[i];
-    let percent = dataForPostMap.get(songPlaying.key).percents[gen];
-    d3.select(this).select(".gen-score").style("color",function(d,i){
-      return colorScale(percent);
-    }).text(Math.round(percent*100)+"%");
+    if(dataForPostMap.has(songPlaying.key)){
+      d3.select(".people").style("display",null);
+      let percent = dataForPostMap.get(songPlaying.key).percents[gen];
+      d3.select(this).select(".gen-score").style("color",function(d,i){
+        return colorScale(percent);
+      }).text(Math.round(percent*100)+"%");
 
-    d3.select(this).style("transform","translate(0,"+transformScale(percent)+"px)")
+      d3.select(this).style("transform","translate(0,"+transformScale(percent)+"px)")
 
-    d3.select(this).select(".gen-image").style("background-image",function(){
-      return "url('assets/images/"+gen+"/"+scale(Math.random())+".png')"
-    });
+      d3.select(this).select(".gen-image").style("background-image",function(){
+        return "url('assets/images/"+gen+"/"+scale(Math.random())+".png')"
+      });
+    } else {
+      d3.select(".people").style("display","none");
+    }
   });
 
 
@@ -325,7 +330,9 @@ function slideController(){
       mySwiper.slideTo(slideOffSet-2,slideChangeSpeed, true);
     }
     else{
-      var decadeSelector = d3.scaleQuantize().domain([0,1]).range([0,6,7,8,9]);
+     //var decadeSelector = d3.scaleQuantize().domain([0,1]).range([0,6,7,8,9]);
+     var decadeSelector = d3.scaleQuantize().domain([0,1]).range([9]);
+
       getData(decadeSelector(Math.random()));
     }
   });
@@ -458,6 +465,8 @@ function getData(songDecades){
   if(overrideAudio.indexOf(song.key) > -1){
     src = 'assets/audio/'+song.key+'.mp3';
   }
+
+  console.log(src);
 
   sound = new Howl({
     src:[src],
