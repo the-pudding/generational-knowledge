@@ -330,8 +330,8 @@ function slideController(){
       mySwiper.slideTo(slideOffSet-2,slideChangeSpeed, true);
     }
     else{
-     //var decadeSelector = d3.scaleQuantize().domain([0,1]).range([0,6,7,8,9]);
-     var decadeSelector = d3.scaleQuantize().domain([0,1]).range([8]);
+     var decadeSelector = d3.scaleQuantize().domain([0,1]).range([0,6,7,8,9]);
+     //var decadeSelector = d3.scaleQuantize().domain([0,1]).range([8]);
 
       getData(decadeSelector(Math.random()));
     }
